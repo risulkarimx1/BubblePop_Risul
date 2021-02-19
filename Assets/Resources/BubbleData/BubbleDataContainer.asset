@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c7a6c2dddb24ceb9545d882e380dbbc, type: 3}
+  m_Name: BubbleDataContainer
+  m_EditorClassIdentifier: 
+  _redBubble: {fileID: 151816127561171448, guid: 4b1f2cbd6553f0848ac83ec0c6f1e1ce,
+    type: 3}
+  _blueBubble: {fileID: 5935648065752475547, guid: df0e9b49ec81a9f4c99db4bf0b89aff6,
+    type: 3}
+  _greenBubble: {fileID: 1168353247478718330, guid: 038f324c94fd85f4286bc1716263267a,
+    type: 3}
