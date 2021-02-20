@@ -13,6 +13,7 @@ namespace Assets.Code.Installers
         {
             Container.Bind<BubblePrefabContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath).AsSingle().NonLazy();
             Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>().FromFactory<CustomBubbleFactory>();
+            Container.Bind<BubbleGraph>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameSceneManager>().AsSingle();
         }
     }

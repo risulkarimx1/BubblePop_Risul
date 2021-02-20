@@ -21,7 +21,7 @@ namespace Assets.Code.Bubble
             var nodeView = _container.InstantiateComponent<BubbleNodeView>(bubbleObject);
             var nodeModel = new BubbleNodeModel(bubbleType, coordinate);
             bubbleObject.name = $"{bubbleType}: [{coordinate}]";
-            return _container.Instantiate<BubbleBubbleNodeController>(new List<object>() {nodeModel, nodeView});
+            return _container.Instantiate<BubbleNodeController>(new List<object>() {nodeModel, nodeView});
         }
     }
 }

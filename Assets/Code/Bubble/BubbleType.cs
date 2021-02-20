@@ -1,4 +1,4 @@
 ﻿namespace Assets.Code.Bubble
 {
-    public enum  BubbleType { Red, Green, Blue }
+    public enum  BubbleType { Empty, Red, Green, Blue }
 }

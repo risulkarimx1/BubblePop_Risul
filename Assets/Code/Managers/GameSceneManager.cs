@@ -7,10 +7,12 @@ namespace Assets.Code.Managers
     public class GameSceneManager : IInitializable, ITickable
     {
         private readonly BubbleFactory _bubbleBubbleFactory;
+        private readonly BubbleGraph _bubbleGraph;
 
-        public GameSceneManager(BubbleFactory bubbleBubbleFactory)
+        public GameSceneManager(BubbleFactory bubbleBubbleFactory, BubbleGraph bubbleGraph)
         {
             _bubbleBubbleFactory = bubbleBubbleFactory;
+            _bubbleGraph = bubbleGraph;
         }
         
         public void Initialize()
@@ -23,6 +25,11 @@ namespace Assets.Code.Managers
             if (Input.GetKeyDown(KeyCode.A))
             {
                 _bubbleBubbleFactory.Create(BubbleType.Blue, new Coordinate() {Row = 0, Col = 0});
+            }
+
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                _bubbleGraph.InitializeBubbleGraph();
             }
         }
     }
