@@ -16,7 +16,13 @@ namespace Assets.Code.Installers
             Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>().WithId(Constants.InitialBubbleFactory)
                 .FromFactory<BubbleFactoryForInitialGraph>();
 
+            Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>()
+                .FromFactory<StrikerBubbleFactory>().WhenInjectedInto<StrikerManager>();
+
             Container.Bind<BubbleGraph>().AsSingle();
+
+            Container.Bind<StrikerManager>().AsSingle().NonLazy();
+            
             Container.BindInterfacesAndSelfTo<GameSceneManager>().AsSingle();
         }
     }

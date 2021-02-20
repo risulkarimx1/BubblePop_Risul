@@ -1,17 +1,30 @@
-﻿using UnityEngine;
-
-namespace Assets.Code.Bubble
+﻿namespace Assets.Code.Bubble
 {
     public class BubbleNodeController : IBubbleNodeController
     {
         private readonly BubbleNodeModel _bubbleNodeModel;
         private readonly BubbleNodeView _bubbleNodeView;
+        private readonly Striker _striker;
 
-        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView)
+        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView, Striker striker = null)
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
-            Coordinate = _bubbleNodeModel.Coordinate;
+            
+            if (striker == null)
+            {
+                Coordinate = _bubbleNodeModel.Coordinate;
+            }
+            else
+            {
+                _striker = striker;
+                _bubbleNodeView.SetPosition(_striker.DefaultPosition);
+            }
+        }
+
+        public void DestroyStriker()
+        {
+            if (_striker != null) _striker.DestroyComponent();
         }
 
         public Coordinate Coordinate
@@ -20,7 +33,6 @@ namespace Assets.Code.Bubble
             set
             {
                 _bubbleNodeModel.Coordinate = value;
-                
                 _bubbleNodeView.SetPosition(_bubbleNodeModel.Coordinate);
             }
         }
