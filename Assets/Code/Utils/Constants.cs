@@ -4,5 +4,6 @@
     {
         public const string LevelDataContainerPath = "LevelData/LevelDataContainer";
         public const string BubbleDataContainerPath = "BubbleData/BubbleDataContainer";
+        public const string InitialBubbleFactory = "BubbleGraph";
     }
 }

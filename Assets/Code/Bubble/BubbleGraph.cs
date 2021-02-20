@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using Assets.Code.LevelGeneration;
+using Assets.Code.Utils;
+using Zenject;
 
 namespace Assets.Code.Bubble
 {
     public class BubbleGraph
     {
         private readonly LevelDataContext _levelDataContext;
-        private readonly BubbleFactory _bubbleFactory;
         private Dictionary<Coordinate, IBubbleNodeController> _bubbles;
-
-        public BubbleGraph(LevelDataContext levelDataContext, BubbleFactory bubbleFactory)
+        
+        [Inject(Id = Constants.InitialBubbleFactory)] private BubbleFactory _bubbleFactory;
+        
+        public BubbleGraph(LevelDataContext levelDataContext)
         {
             _levelDataContext = levelDataContext;
-            _bubbleFactory = bubbleFactory;
             _bubbles = new Dictionary<Coordinate, IBubbleNodeController>();
         }
 

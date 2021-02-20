@@ -20,13 +20,8 @@ namespace Assets.Code.Bubble
             set
             {
                 _bubbleNodeModel.Coordinate = value;
-                var colPosition = _bubbleNodeModel.Coordinate.Col * 1.0f;
-                if (_bubbleNodeModel.Coordinate.Row % 2 == 1)
-                {
-                    colPosition -= 0.5f;
-                }
-
-                _bubbleNodeView.SetPosition(new Vector2(colPosition, -_bubbleNodeModel.Coordinate.Row));
+                
+                _bubbleNodeView.SetPosition(_bubbleNodeModel.Coordinate);
             }
         }
 

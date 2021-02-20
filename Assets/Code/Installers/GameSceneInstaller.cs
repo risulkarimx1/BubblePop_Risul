@@ -11,8 +11,11 @@ namespace Assets.Code.Installers
     {
         public override void InstallBindings()
         {
-            Container.Bind<BubblePrefabContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath).AsSingle().NonLazy();
-            Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>().FromFactory<CustomBubbleFactory>();
+            Container.Bind<BubblePrefabContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)
+                .AsSingle().NonLazy();
+            Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>().WithId(Constants.InitialBubbleFactory)
+                .FromFactory<BubbleFactoryForInitialGraph>();
+
             Container.Bind<BubbleGraph>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameSceneManager>().AsSingle();
         }

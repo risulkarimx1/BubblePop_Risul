@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Bubble;
+using Assets.Code.Utils;
 using UnityEngine;
 using Zenject;
 
@@ -6,12 +7,13 @@ namespace Assets.Code.Managers
 {
     public class GameSceneManager : IInitializable, ITickable
     {
-        private readonly BubbleFactory _bubbleBubbleFactory;
+        [Inject(Id = Constants.InitialBubbleFactory)]
+        private BubbleFactory _bubbleBubbleFactory;
+        
         private readonly BubbleGraph _bubbleGraph;
 
-        public GameSceneManager(BubbleFactory bubbleBubbleFactory, BubbleGraph bubbleGraph)
+        public GameSceneManager(BubbleGraph bubbleGraph)
         {
-            _bubbleBubbleFactory = bubbleBubbleFactory;
             _bubbleGraph = bubbleGraph;
         }
         
