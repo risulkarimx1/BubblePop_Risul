@@ -37,7 +37,7 @@ namespace Assets.Code.Bubble
             return _bubbleNodeView.ConvertToStriker();
         }
 
-        public void SetPosition(Vector2 position) => _bubbleNodeView.SetPosition(position);
+        public void SetPosition(Vector2 position, bool animate) => _bubbleNodeView.SetPosition(position, animate);
 
         public BubbleType BubbleType
         {

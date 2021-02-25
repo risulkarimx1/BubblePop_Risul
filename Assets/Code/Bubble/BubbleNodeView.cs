@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using DG.Tweening;
+using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
@@ -12,7 +14,18 @@ namespace Assets.Code.Bubble
             _transform = GetComponent<Transform>();
         }
 
-        public void SetPosition(Vector2 position) => _transform.position = position;
+        public void SetPosition(Vector2 position, bool animate)
+        {
+            if (animate)
+            {
+                _transform.DOMove(position, 1,false);
+            }
+            else
+            {
+                _transform.position = position;
+            }
+
+        }
 
         public void SetPosition(Coordinate coordinate)
         {
@@ -22,7 +35,7 @@ namespace Assets.Code.Bubble
                 colPosition -= 0.5f;
             }
 
-            SetPosition(new Vector2(colPosition, -coordinate.Row));
+            SetPosition(new Vector2(colPosition, -coordinate.Row), false);
         }
 
         public StrikerView ConvertToStriker()

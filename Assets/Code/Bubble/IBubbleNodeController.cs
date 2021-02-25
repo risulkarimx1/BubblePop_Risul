@@ -15,6 +15,6 @@ namespace Assets.Code.Bubble
         IBubbleNodeController Left { get; set; }
 
         StrikerView ConvertToStriker();
-        void SetPosition(Vector2 position);
+        void SetPosition(Vector2 position, bool animate);
     }
 }
