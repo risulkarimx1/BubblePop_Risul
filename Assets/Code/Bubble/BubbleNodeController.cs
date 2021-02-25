@@ -1,32 +1,27 @@
-﻿namespace Assets.Code.Bubble
+﻿using UnityEngine;
+
+namespace Assets.Code.Bubble
 {
     public class BubbleNodeController : IBubbleNodeController
     {
         private readonly BubbleNodeModel _bubbleNodeModel;
         private readonly BubbleNodeView _bubbleNodeView;
-        private readonly Striker _striker;
 
-        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView, Striker striker = null)
+        public BubbleNodeView BubbleNodeView => _bubbleNodeView;
+        public IBubbleNodeController TopLeft { get; set; }
+        public IBubbleNodeController TopRight { get; set; }
+        public IBubbleNodeController Right { get; set; }
+        public IBubbleNodeController BottomRight { get; set; }
+        public IBubbleNodeController BottomLeft { get; set; }
+        public IBubbleNodeController Left { get; set; }
+        
+        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView)
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
-            
-            if (striker == null)
-            {
-                Coordinate = _bubbleNodeModel.Coordinate;
-            }
-            else
-            {
-                _striker = striker;
-                _bubbleNodeView.SetPosition(_striker.DefaultPosition);
-            }
+            Coordinate = bubbleNodeModel.Coordinate;
         }
-
-        public void DestroyStriker()
-        {
-            if (_striker != null) _striker.DestroyComponent();
-        }
-
+        
         public Coordinate Coordinate
         {
             get => _bubbleNodeModel.Coordinate;
@@ -37,17 +32,17 @@
             }
         }
 
+        public StrikerView ConvertToStriker()
+        {
+            return _bubbleNodeView.ConvertToStriker();
+        }
+
+        public void SetPosition(Vector2 position) => _bubbleNodeView.SetPosition(position);
+
         public BubbleType BubbleType
         {
             get => _bubbleNodeModel.BubbleType;
             set => _bubbleNodeModel.BubbleType = value;
         }
-
-        public IBubbleNodeController TopLeft { get; set; }
-        public IBubbleNodeController TopRight { get; set; }
-        public IBubbleNodeController Right { get; set; }
-        public IBubbleNodeController BottomRight { get; set; }
-        public IBubbleNodeController BottomLeft { get; set; }
-        public IBubbleNodeController Left { get; set; }
     }
 }

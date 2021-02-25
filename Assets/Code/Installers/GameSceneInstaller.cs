@@ -11,18 +11,20 @@ namespace Assets.Code.Installers
     {
         public override void InstallBindings()
         {
-            Container.Bind<BubblePrefabContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)
+            Container.Bind<Camera>().WithId(Constants.MainCameraId).FromInstance(Camera.main).AsSingle();
+
+            Container.Bind<BubbleDataContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)
                 .AsSingle().NonLazy();
-            Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>().WithId(Constants.InitialBubbleFactory)
-                .FromFactory<BubbleFactoryForInitialGraph>();
 
             Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>()
-                .FromFactory<StrikerBubbleFactory>().WhenInjectedInto<StrikerManager>();
+                .FromFactory<BubbleNodeFactory>();
+
+            Container.BindFactory<string, Vector2, StrikerController, StrikerController.Factory>();
 
             Container.Bind<BubbleGraph>().AsSingle();
 
-            Container.Bind<StrikerManager>().AsSingle().NonLazy();
-            
+            Container.BindInterfacesAndSelfTo<StrikerManager>().AsSingle().NonLazy();
+
             Container.BindInterfacesAndSelfTo<GameSceneManager>().AsSingle();
         }
     }

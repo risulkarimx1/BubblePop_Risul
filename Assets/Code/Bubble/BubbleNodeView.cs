@@ -5,6 +5,7 @@ namespace Assets.Code.Bubble
     public class BubbleNodeView : MonoBehaviour
     {
         private Transform _transform;
+        private PhysicsMaterial2D _strikerPhysicsMaterial;
 
         private void Awake()
         {
@@ -22,6 +23,16 @@ namespace Assets.Code.Bubble
             }
 
             SetPosition(new Vector2(colPosition, -coordinate.Row));
+        }
+
+        public StrikerView ConvertToStriker()
+        {
+            return gameObject.AddComponent<StrikerView>();
+        }
+
+        public void AddPhysicsMaterial(PhysicsMaterial2D strikerPhysicsMaterial)
+        {
+            _strikerPhysicsMaterial = strikerPhysicsMaterial;
         }
     }
 }

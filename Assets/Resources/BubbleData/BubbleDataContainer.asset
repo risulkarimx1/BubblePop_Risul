@@ -18,3 +18,6 @@ MonoBehaviour:
     type: 3}
   _greenBubble: {fileID: 1168353247478718330, guid: 038f324c94fd85f4286bc1716263267a,
     type: 3}
+  _strikerPhysicsMaterial: {fileID: 6200000, guid: 0586bd43add6c5d4c912c7055a0f7dd7,
+    type: 2}
+  _strikerSequence: r,r,g,g,b,g,g,g,r

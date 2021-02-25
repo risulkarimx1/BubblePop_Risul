@@ -1,30 +1,21 @@
 ﻿using System.Collections.Generic;
 using Assets.Code.LevelGeneration;
-using Assets.Code.Utils;
-using Zenject;
 
 namespace Assets.Code.Bubble
 {
     public class BubbleGraph
     {
+        private readonly BubbleFactory _bubbleFactory;
         private readonly LevelDataContext _levelDataContext;
         private Dictionary<Coordinate, IBubbleNodeController> _bubbles;
+        private Dictionary<int, IBubbleNodeController> _viewToControllerMap;
         
-        [Inject(Id = Constants.InitialBubbleFactory)] private BubbleFactory _bubbleFactory;
-        
-        public BubbleGraph(LevelDataContext levelDataContext)
+        public BubbleGraph(BubbleFactory bubbleFactory, LevelDataContext levelDataContext)
         {
+            _bubbleFactory = bubbleFactory;
             _levelDataContext = levelDataContext;
             _bubbles = new Dictionary<Coordinate, IBubbleNodeController>();
-        }
-
-        private BubbleType ColorToTypeConversion(string color)
-        {
-            if (color == "r") return BubbleType.Red;
-            else if (color == "g") return BubbleType.Green;
-            else if (color == "b") return BubbleType.Blue;
-            else if (color == "e") return BubbleType.Empty;
-            return BubbleType.Blue;
+            _viewToControllerMap = new Dictionary<int, IBubbleNodeController>();
         }
 
         public void InitializeBubbleGraph()
@@ -40,7 +31,7 @@ namespace Assets.Code.Bubble
                 for (var col = 0; col < colors.Length; col++)
                 {
                     var color = colors[col];
-                    var bubbleType = ColorToTypeConversion(color);
+                    var bubbleType = BubbleUtility.ConvertColorToBubbleType(color);
                     
                     if(bubbleType == BubbleType.Empty) continue;
                     
@@ -81,9 +72,10 @@ namespace Assets.Code.Bubble
             }
         }
 
-        public void AddNode(IBubbleNodeController bubbleNodeController)
+        public void AddNode(IBubbleNodeController bubbleController)
         {
-            _bubbles.Add(bubbleNodeController.Coordinate, bubbleNodeController);
+            _bubbles.Add(bubbleController.Coordinate, bubbleController);
+            _viewToControllerMap.Add(bubbleController.BubbleNodeView.GetInstanceID(), bubbleController);
         }
     }
 }
