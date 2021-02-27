@@ -30,6 +30,7 @@ namespace Assets.Code.Installers
             Container.BindFactory<string, Vector2, StrikerController, StrikerController.Factory>();
 
             // Bubble Graph
+            Container.Bind<BubbleAttachmentHelper>().AsSingle();
             Container.Bind<BubbleGraph>().AsSingle();
 
             // Managers
