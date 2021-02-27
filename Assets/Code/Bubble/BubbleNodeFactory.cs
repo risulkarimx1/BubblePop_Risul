@@ -18,9 +18,7 @@ namespace Assets.Code.Bubble
             var bubblePrefab = _bubbleDataContainer.GetBubbleOfType(bubbleType);
             var bubbleObject = _container.InstantiatePrefab(bubblePrefab);
             var nodeView = _container.InstantiateComponent<BubbleNodeView>(bubbleObject);
-            nodeView.AddPhysicsMaterial(_bubbleDataContainer.StrikerPhysicsMaterial);
             var nodeModel = new BubbleNodeModel(bubbleType, coordinate);
-            bubbleObject.name = $"{bubbleType}: [{coordinate}]";
             return _container.Instantiate<BubbleNodeController>(new object[] {nodeModel, nodeView});
         }
     }

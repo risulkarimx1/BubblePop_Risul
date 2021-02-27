@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-public struct Coordinate
+﻿public struct Coordinate
 {
     public int Row;
     public int Col;

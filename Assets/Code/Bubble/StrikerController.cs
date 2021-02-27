@@ -13,7 +13,7 @@ namespace Assets.Code.Bubble
         private IDisposable _collisionEnterDisposable;
         
         public StrikerController(BubbleFactory bubbleNodeFactory, BubbleDataContainer bubbleDataContainer,
-            Vector2 position, string color)
+            Vector2 position, string color, SignalBus signalBus)
         {
             _bubbleNodeController = bubbleNodeFactory.Create(BubbleUtility.ConvertColorToBubbleType(color), new Coordinate() {Row = -1, Col = -1});
             _strikerView = _bubbleNodeController.ConvertToStriker();
@@ -23,8 +23,12 @@ namespace Assets.Code.Bubble
             {
                 if (other.collider.CompareTag(Constants.BubbleTag))
                 {
-                    // signal graph controller
-                    Debug.Log($"from unirx {other.gameObject.name}");
+                    signalBus.Fire(new BubbleCollisionSignal()
+                    {
+                        CollisionObject = other,
+                        StrikerNode = _bubbleNodeController,
+                    });
+                    
                     DestroyComponent();
                 }
             }).AddTo(_strikerView);

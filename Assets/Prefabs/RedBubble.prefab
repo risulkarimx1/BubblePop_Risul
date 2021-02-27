@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1769241895052961011}
   - component: {fileID: 7801023342297148244}
   - component: {fileID: -7175370833372832689}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RedBubble
   m_TagString: Bubble
   m_Icon: {fileID: 0}
@@ -97,4 +97,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4

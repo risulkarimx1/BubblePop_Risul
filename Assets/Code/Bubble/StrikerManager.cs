@@ -6,9 +6,9 @@ namespace Assets.Code.Bubble
 {
     public class StrikerManager : ITickable
     {
-        private readonly Vector2 _hiddenPosition = new Vector2(8, -10);
-        private readonly Vector2 _firstPosition = new Vector2(2, -10);
-        private readonly Vector2 _secondPosition = new Vector2(4, -10);
+        private readonly Vector2 _hiddenPosition = new Vector2(8, -12);
+        private readonly Vector2 _firstPosition = new Vector2(2, -12);
+        private readonly Vector2 _secondPosition = new Vector2(4, -12);
         private StrikerController[] _strikerControllers;
         private readonly StrikerController.Factory _strikerFactory;
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using Assets.Code.Utils;
-using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 
@@ -31,7 +29,7 @@ namespace Assets.Code.Bubble
         public void Strike(Vector2 target)
         {
             _rigidBody.isKinematic = false;
-            _rigidBody.AddForce((target - (Vector2) transform.position).normalized * 10, ForceMode2D.Impulse);
+            _rigidBody.AddForce((target - (Vector2) transform.position).normalized * 20, ForceMode2D.Impulse);
         }
 
         public void SetName(string objectName)
