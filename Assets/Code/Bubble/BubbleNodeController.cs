@@ -21,50 +21,6 @@ namespace Assets.Code.Bubble
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
-           
-        }
-        
-        public int GetFreeNeighbor(int index)
-        {
-            _neighbors = new IBubbleNodeController[] { BottomLeft, Left, TopLeft, TopRight, Right, BottomRight };
-            
-            if (index == 0)
-            {
-                Debug.Log($"[{this}]: is bottom left free {BottomLeft}");
-            }
-            if (index == 1)
-            {
-                Debug.Log($"[{this}]: is left free {Left}");
-            }
-            if (index == 2)
-            {
-                Debug.Log($"[{this}]: is top left free {TopLeft}");
-            }
-            if (index == 3)
-            {
-                Debug.Log($"[{this}]: is top right free {TopRight}");
-            }
-            if (index == 4)
-            {
-                Debug.Log($"[{this}]: is right free {Right}");
-            }
-            if (index == 5)
-            {
-                Debug.Log($"[{this}]: is bottom right free {BottomRight}");
-            }
-
-            if (_neighbors[index] != null)
-            {
-                Debug.Log($"{index} is not free >>>>>>>>>>>>>>>");
-                for (int i = 0; i < 6; i++)
-                {
-                    if (_neighbors[i] == null) return i;
-                }
-                Debug.Break();
-            }
-
-           
-            return index;
         }
 
         public StrikerView ConvertToStriker() => _bubbleNodeView.ConvertToStriker();
@@ -74,12 +30,7 @@ namespace Assets.Code.Bubble
             _bubbleNodeView.SetPosition(position, animate, speed);
         }
 
-        
-        public Vector2 Position
-        {
-            get => _bubbleNodeView.GetPosition();
-            set => _bubbleNodeView.SetPosition(value);
-        }
+        public Vector2 Position => _bubbleNodeView.GetPosition();
 
         public int Id => _bubbleNodeView.gameObject.GetInstanceID();
 

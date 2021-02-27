@@ -37,9 +37,8 @@ namespace Assets.Code.Bubble
                 var colors = text.Split(',');
                 pos.x = 0;
                 if (row % 2 == 1) pos.x -= 0.5f;
-                for (var col = 0; col < colors.Length; col++)
+                foreach (var color in colors)
                 {
-                    var color = colors[col];
                     var bubbleType = BubbleUtility.ConvertColorToBubbleType(color);
 
                     if (bubbleType == BubbleType.Empty)
@@ -61,7 +60,6 @@ namespace Assets.Code.Bubble
             foreach (var bubbleNodeController in _viewToControllerMap)
             {
                 await MapNeighbors(bubbleNodeController.Value);
-                //await UniTask.Yield();
                 bubbleNodeController.Value.ShowNeighbor();
             }
 
@@ -94,7 +92,6 @@ namespace Assets.Code.Bubble
             if (hit.collider != null)
             {
                 Debug.DrawRay(origin, direction, Color.red);
-                // Debug.Log($"From {origin} - hit collider game object name {hit.collider.gameObject.name} to direction");
                 return _viewToControllerMap[hit.collider.gameObject.GetInstanceID()];
             }
             return null;
@@ -108,12 +105,10 @@ namespace Assets.Code.Bubble
             
             _viewToControllerMap.Add(strikerNodeController.Id, strikerNodeController);
             RepositionBubble(collision, colliderNodeController, strikerNodeController);
-            MapNeighbors(strikerNodeController);
+            _ = MapNeighbors(strikerNodeController);
             strikerNodeController.ShowNeighbor();
         }
-
         
-
         public void RepositionBubble(Collision2D collision, IBubbleNodeController collisionNodeController, IBubbleNodeController strikerNodeController)
         {
             var contactPoint = collision.contacts[0].point;
@@ -121,61 +116,47 @@ namespace Assets.Code.Bubble
             float angle = Mathf.Atan2(contactPoint.x, contactPoint.y) * 180 / Mathf.PI;
             if (angle < 0) angle = 360 + angle;
             var index = (int) (angle / 60);
-            Debug.Log($"[{strikerNodeController}] - Collided with {collisionNodeController} at angle {(int)(angle / 60)}");
-            index = collisionNodeController.GetFreeNeighbor(index);
-            Debug.Log($"Now Index {index}");
             var position = collisionNodeController.Position;
-            // var coordinate = collisionNodeController.Coordinate;
             if (index == 0)
             {
                 // bottom left of other
                 position.x -= 0.5f;
                 position.y--;
-                // coordinate.Row++;
             }
             else if (index == 1)
             {
                 // left of other
                 position.x--;
-                // coordinate.Col--;
             }
             else if (index == 2)
             {
                 // top left of other
                 position.x -= 0.5f;
                 position.y++;
-                // coordinate.Row--;
             }
             else if (index == 3)
             {
                 // top right of other
                 position.x += 0.5f;
                 position.y++;
-                // coordinate.Col++;
-                // coordinate.Row--;
             }
             else if (index == 4)
             {
                 // right of other
                 position.x++;
-                // coordinate.Col++;
             }
             else if (index == 5)
             {
                 // bottom right of other
                 position.x += 0.5f;
                 position.y--;
-                // coordinate.Row++;
-                // coordinate.Col++;
             }
 
-            strikerNodeController.Position = position;
-           // strikerNodeController.Coordinate = coordinate;
+            strikerNodeController.SetPosition(position);
         }
 
         public void AddNode(IBubbleNodeController bubbleController)
         {
-            // _bubbles.Add(bubbleController.Coordinate, bubbleController);
             _viewToControllerMap.Add(bubbleController.Id, bubbleController);
         }
 
