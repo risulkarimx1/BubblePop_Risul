@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Code.Bubble
@@ -15,12 +16,14 @@ namespace Assets.Code.Bubble
         public IBubbleNodeController Left { get; set; }
         public IBubbleNodeController TopLeft { get; set; }
 
-        private IBubbleNodeController[] _neighbors;
-
         public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView)
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
+            _bubbleNodeModel.Value.Subscribe(val =>
+            {
+                _bubbleNodeView.ValueText.text = val.ToString();
+            }).AddTo(_bubbleNodeView);
         }
 
         public StrikerView ConvertToStriker() => _bubbleNodeView.ConvertToStriker();

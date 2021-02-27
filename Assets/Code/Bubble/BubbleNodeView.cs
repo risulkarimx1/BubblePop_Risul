@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
     public class BubbleNodeView : MonoBehaviour
     {
+        [SerializeField] private TextMeshPro _valueText;
         public List<string> Neighbors; 
         private Transform _transform;
+
+        public TextMeshPro ValueText => _valueText;
 
         private void Awake()
         {

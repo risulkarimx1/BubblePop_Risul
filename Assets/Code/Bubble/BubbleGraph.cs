@@ -15,8 +15,9 @@ namespace Assets.Code.Bubble
         private Dictionary<int, IBubbleNodeController> _viewToControllerMap;
 
         private BubbleAttachmentHelper _attachmentHelper;
-        
-        public BubbleGraph(BubbleFactory bubbleFactory, LevelDataContext levelDataContext, SignalBus signalBus, BubbleAttachmentHelper attachmentHelper)
+
+        public BubbleGraph(BubbleFactory bubbleFactory, LevelDataContext levelDataContext, SignalBus signalBus,
+            BubbleAttachmentHelper attachmentHelper)
         {
             _bubbleFactory = bubbleFactory;
             _levelDataContext = levelDataContext;
@@ -27,7 +28,7 @@ namespace Assets.Code.Bubble
             _signalBus.Subscribe<BubbleCollisionSignal>(OnBubbleCollided);
         }
 
-        public async UniTask InitializeBubbleGraph()
+        public async UniTask Initialize()
         {
             string levelData = _levelDataContext.GetSelectedLevelData();
             var lines = levelData.Split('\n');
@@ -37,11 +38,12 @@ namespace Assets.Code.Bubble
             {
                 var text = lines[row].Trim();
 
-                var colors = text.Split(',');
+                var columns = text.Split(',');
                 pos.x = 0;
                 if (row % 2 == 1) pos.x -= 0.5f;
-                foreach (var color in colors)
+                foreach (var column in columns)
                 {
+                    var color = column.Split('-')[0];
                     var bubbleType = BubbleUtility.ConvertColorToBubbleType(color);
 
                     if (bubbleType == BubbleType.Empty)
@@ -50,7 +52,7 @@ namespace Assets.Code.Bubble
                         continue;
                     }
 
-                    var node = _bubbleFactory.Create(bubbleType);
+                    var node = _bubbleFactory.Create(column);
                     node.SetName($"Node : {nodeCounter++}");
                     node.SetPosition(pos);
                     pos.x++;
@@ -65,26 +67,19 @@ namespace Assets.Code.Bubble
                 await _attachmentHelper.MapNeighbors(bubbleNodeController.Value);
                 bubbleNodeController.Value.ShowNeighbor();
             }
-
         }
-
-       
-
-       
 
         private void OnBubbleCollided(BubbleCollisionSignal bubbleCollisionSignal)
         {
             var collision = bubbleCollisionSignal.CollisionObject;
             var colliderNodeController = _viewToControllerMap[collision.gameObject.GetInstanceID()];
             var strikerNodeController = bubbleCollisionSignal.StrikerNode;
-            
+
             _viewToControllerMap.Add(strikerNodeController.Id, strikerNodeController);
             _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController);
             _ = _attachmentHelper.MapNeighbors(strikerNodeController);
             strikerNodeController.ShowNeighbor();
         }
-        
-        
 
         public void AddNode(IBubbleNodeController bubbleController)
         {

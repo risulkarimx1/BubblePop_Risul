@@ -83,7 +83,7 @@ public class MessageServiceManagerTest : ZenjectUnitTestFixture
 
         // if for some reason, api.connect is not called before client.connect
         // the line callOrderCorrec = apiConnectedCalled will be making
-        // callOrderCorrect value to false
+        // callOrderCorrect Value to false
         _mockClient.Setup(m => m.Connect(It.IsAny<IMessageAPI>(), It.IsAny<string>()))
             .Callback(() => clietConnectCalled = apiConnectCalled? true: false);
 

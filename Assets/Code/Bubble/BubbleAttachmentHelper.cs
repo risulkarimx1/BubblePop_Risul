@@ -13,14 +13,15 @@ namespace Assets.Code.Bubble
         {
             _viewToControllerMap = viewToControllerMap;
         }
-        
-        public void PlaceInGraph(Collision2D collision, IBubbleNodeController collisionNodeController, IBubbleNodeController strikerNodeController)
+
+        public void PlaceInGraph(Collision2D collision, IBubbleNodeController collisionNodeController,
+            IBubbleNodeController strikerNodeController)
         {
             var contactPoint = collision.contacts[0].point;
             contactPoint = collisionNodeController.Position - contactPoint;
             float angle = Mathf.Atan2(contactPoint.x, contactPoint.y) * 180 / Mathf.PI;
             if (angle < 0) angle = 360 + angle;
-            var index = (int)(angle / 60);
+            var index = (int) (angle / 60);
             var position = collisionNodeController.Position;
             if (index == 0)
             {
@@ -57,7 +58,8 @@ namespace Assets.Code.Bubble
                 position.y--;
             }
 
-            strikerNodeController.SetPosition(position);
+            strikerNodeController.SetPosition(position, true,10);
+            
         }
 
         public async UniTask MapNeighbors(IBubbleNodeController strikerNodeController)

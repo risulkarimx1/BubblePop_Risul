@@ -10,12 +10,14 @@ namespace Assets.Code.Bubble
     {
         private readonly StrikerView _strikerView;
         private readonly IBubbleNodeController _bubbleNodeController;
-        private IDisposable _collisionEnterDisposable;
-        
-        public StrikerController(BubbleFactory bubbleNodeFactory, BubbleDataContainer bubbleDataContainer,
-            Vector2 position, string color, SignalBus signalBus)
+        private readonly IDisposable _collisionEnterDisposable;
+
+        public StrikerController(
+            BubbleFactory bubbleNodeFactory,
+            BubbleDataContainer bubbleDataContainer,
+            Vector2 position, string nodeInfo, SignalBus signalBus)
         {
-            _bubbleNodeController = bubbleNodeFactory.Create(BubbleUtility.ConvertColorToBubbleType(color));
+            _bubbleNodeController = bubbleNodeFactory.Create(nodeInfo);
             _strikerView = _bubbleNodeController.ConvertToStriker();
 
             _strikerView.Configure(bubbleDataContainer.StrikerPhysicsMaterial, position);
@@ -28,7 +30,7 @@ namespace Assets.Code.Bubble
                         CollisionObject = other,
                         StrikerNode = _bubbleNodeController,
                     });
-                    
+
                     DestroyComponent();
                 }
             }).AddTo(_strikerView);
@@ -45,7 +47,7 @@ namespace Assets.Code.Bubble
             _collisionEnterDisposable.Dispose();
             _strikerView.DestroyComponent();
         }
-        
+
         public class Factory : PlaceholderFactory<string, Vector2, StrikerController>
         {
         }

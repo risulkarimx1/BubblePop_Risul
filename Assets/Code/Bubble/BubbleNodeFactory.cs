@@ -1,8 +1,9 @@
-﻿using Zenject;
+﻿using System;
+using Zenject;
 
 namespace Assets.Code.Bubble
 {
-    public class BubbleNodeFactory : IFactory<BubbleType, IBubbleNodeController>
+    public class BubbleNodeFactory : IFactory<string, IBubbleNodeController>
     {
         protected readonly DiContainer _container;
         protected readonly BubbleDataContainer _bubbleDataContainer;
@@ -13,13 +14,15 @@ namespace Assets.Code.Bubble
             _bubbleDataContainer = bubbleDataContainer;
         }
 
-        public virtual IBubbleNodeController Create(BubbleType bubbleType)
+        public virtual IBubbleNodeController Create(string nodeInfo)
         {
+            var info = nodeInfo.Split('-');
+            var bubbleType = BubbleUtility.ConvertColorToBubbleType(info[0]);
+            var value = Convert.ToInt32(info[1]);
             var bubblePrefab = _bubbleDataContainer.GetBubbleOfType(bubbleType);
-            var bubbleObject = _container.InstantiatePrefab(bubblePrefab);
-            var nodeView = _container.InstantiateComponent<BubbleNodeView>(bubbleObject);
-            var nodeModel = new BubbleNodeModel(bubbleType);
-            return _container.Instantiate<BubbleNodeController>(new object[] {nodeModel, nodeView});
+            var bubbleView = _container.InstantiatePrefabForComponent<BubbleNodeView>(bubblePrefab);
+            var nodeModel = new BubbleNodeModel(bubbleType,value);
+            return _container.Instantiate<BubbleNodeController>(new object[] {nodeModel, bubbleView });
         }
     }
 }

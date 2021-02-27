@@ -19,7 +19,7 @@ namespace Assets.Code.Managers
         
         public void Initialize()
         {
-            _ =_bubbleGraph.InitializeBubbleGraph();
+            _ =_bubbleGraph.Initialize();
             _strikerManager.InitializeStrikers();
         }
 

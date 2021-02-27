@@ -32,6 +32,7 @@ namespace Assets.Code.Bubble
             _strikerControllers = new StrikerController[_totalStrikers];
             for (int i = 0; i < strikers.Length; i++)
             {
+                
                 _strikerControllers[i] = _strikerFactory.Create(strikers[i], _hiddenPosition);
                 _strikerControllers[i].SetName($"Striker- {i}");
             }

@@ -16,9 +16,9 @@ namespace DG.Tweening
 
         #region SpriteRenderer
 
-        /// <summary>Tweens a SpriteRenderer's color to the given value.
+        /// <summary>Tweens a SpriteRenderer's color to the given Value.
         /// Also stores the spriteRenderer as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
+        /// <param name="endValue">The end Value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Color, Color, ColorOptions> DOColor(this SpriteRenderer target, Color endValue, float duration)
         {
             TweenerCore<Color, Color, ColorOptions> t = DOTween.To(() => target.color, x => target.color = x, endValue, duration);
@@ -26,9 +26,9 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Material's alpha color to the given value.
+        /// <summary>Tweens a Material's alpha color to the given Value.
         /// Also stores the spriteRenderer as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
+        /// <param name="endValue">The end Value to reach</param><param name="duration">The duration of the tween</param>
         public static TweenerCore<Color, Color, ColorOptions> DOFade(this SpriteRenderer target, float endValue, float duration)
         {
             TweenerCore<Color, Color, ColorOptions> t = DOTween.ToAlpha(() => target.color, x => target.color = x, endValue, duration);
@@ -66,11 +66,11 @@ namespace DG.Tweening
 
         #region SpriteRenderer
 
-        /// <summary>Tweens a SpriteRenderer's color to the given value,
+        /// <summary>Tweens a SpriteRenderer's color to the given Value,
         /// in a way that allows other DOBlendableColor tweens to work together on the same target,
         /// instead than fight each other as multiple DOColor would do.
         /// Also stores the SpriteRenderer as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The value to tween to</param><param name="duration">The duration of the tween</param>
+        /// <param name="endValue">The Value to tween to</param><param name="duration">The duration of the tween</param>
         public static Tweener DOBlendableColor(this SpriteRenderer target, Color endValue, float duration)
         {
             endValue = endValue - target.color;

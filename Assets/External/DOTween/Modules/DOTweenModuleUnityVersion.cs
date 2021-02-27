@@ -180,9 +180,9 @@ namespace DG.Tweening
 
         #region Material
 
-        /// <summary>Tweens a Material's named texture offset property with the given ID to the given value.
+        /// <summary>Tweens a Material's named texture offset property with the given ID to the given Value.
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
+        /// <param name="endValue">The end Value to reach</param>
         /// <param name="propertyID">The ID of the material property to tween (also called nameID in Unity's manual)</param>
         /// <param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2, Vector2, VectorOptions> DOOffset(this Material target, Vector2 endValue, int propertyID, float duration)
@@ -196,9 +196,9 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Material's named texture scale property with the given ID to the given value.
+        /// <summary>Tweens a Material's named texture scale property with the given ID to the given Value.
         /// Also stores the material as the tween's target so it can be used for filtered operations</summary>
-        /// <param name="endValue">The end value to reach</param>
+        /// <param name="endValue">The end Value to reach</param>
         /// <param name="propertyID">The ID of the material property to tween (also called nameID in Unity's manual)</param>
         /// <param name="duration">The duration of the tween</param>
         public static TweenerCore<Vector2, Vector2, VectorOptions> DOTiling(this Material target, Vector2 endValue, int propertyID, float duration)

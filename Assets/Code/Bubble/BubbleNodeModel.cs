@@ -1,12 +1,28 @@
-﻿namespace Assets.Code.Bubble
+﻿using System;
+using System.Collections.Generic;
+using UniRx;
+using UnityEngine;
+
+namespace Assets.Code.Bubble
 {
+    [Serializable]
     public class BubbleNodeModel
     {
-        public BubbleType BubbleType { get; set; }
+        [SerializeField]
+        private BubbleType _bubbleType;
+
+        public ReactiveProperty<int> Value { get; set; } = new ReactiveProperty<int>(0);
+
+        public BubbleType BubbleType
+        {
+            get => _bubbleType;
+            set => _bubbleType = value;
+        }
         
-        public BubbleNodeModel(BubbleType bubbleType)
+        public BubbleNodeModel(BubbleType bubbleType, int value)
         {
             BubbleType = bubbleType;
+            Value.Value = value;
         }
 
         public override string ToString()

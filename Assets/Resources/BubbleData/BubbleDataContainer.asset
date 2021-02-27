@@ -20,4 +20,4 @@ MonoBehaviour:
     type: 3}
   _strikerPhysicsMaterial: {fileID: 6200000, guid: 0586bd43add6c5d4c912c7055a0f7dd7,
     type: 2}
-  _strikerSequence: r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b,r,g,b
+  _strikerSequence: r-2,g-2,b-4,r-4,g-8,b-4
