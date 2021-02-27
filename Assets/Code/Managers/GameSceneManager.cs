@@ -1,5 +1,4 @@
 ﻿using Assets.Code.Bubble;
-using UnityEngine;
 using Zenject;
 
 namespace Assets.Code.Managers
@@ -20,20 +19,13 @@ namespace Assets.Code.Managers
         
         public void Initialize()
         {
-            
+            _ =_bubbleGraph.InitializeBubbleGraph();
+            _strikerManager.InitializeStrikers();
         }
 
         public void Tick()
         {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                _bubbleBubbleFactory.Create(BubbleType.Blue, new Coordinate() {Row = 0, Col = 0});
-            }
-
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                _bubbleGraph.InitializeBubbleGraph();
-            }
+            
         }
     }
 }

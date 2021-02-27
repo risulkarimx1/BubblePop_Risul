@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 384400636}
   - component: {fileID: 384400638}
   m_Layer: 0
-  m_Name: Boundary
+  m_Name: LeftBoundary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -324,7 +324,7 @@ GameObject:
   - component: {fileID: 929122724}
   - component: {fileID: 929122726}
   m_Layer: 0
-  m_Name: Boundary (1)
+  m_Name: RightBoudary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

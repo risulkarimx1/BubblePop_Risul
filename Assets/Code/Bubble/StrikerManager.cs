@@ -6,11 +6,13 @@ namespace Assets.Code.Bubble
 {
     public class StrikerManager : ITickable
     {
+        
         private readonly Vector2 _hiddenPosition = new Vector2(8, -12);
         private readonly Vector2 _firstPosition = new Vector2(2, -12);
         private readonly Vector2 _secondPosition = new Vector2(4, -12);
         private StrikerController[] _strikerControllers;
         private readonly StrikerController.Factory _strikerFactory;
+        private readonly BubbleDataContainer _bubbleDataContainer;
 
         private int _currentStriker;
         private int _totalStrikers;
@@ -20,12 +22,12 @@ namespace Assets.Code.Bubble
         public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer)
         {
             _strikerFactory = strikerFactory;
-            CreateStrikers(bubbleDataContainer.StrikerSequence);
+            _bubbleDataContainer = bubbleDataContainer;
         }
 
-        public void CreateStrikers(string strikerSequence)
+        public void InitializeStrikers()
         {
-            var strikers = strikerSequence.Trim().Split(',');
+            var strikers = _bubbleDataContainer.StrikerSequence.Trim().Split(',');
             _totalStrikers = strikers.Length;
             _strikerControllers = new StrikerController[_totalStrikers];
             for (int i = 0; i < strikers.Length; i++)

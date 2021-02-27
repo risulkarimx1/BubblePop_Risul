@@ -14,14 +14,14 @@ namespace Assets.Code.Bubble
         public IBubbleNodeController Left { get; set; }
         public IBubbleNodeController TopLeft { get; set; }
 
-        private readonly IBubbleNodeController[] _neighbors;
+        private IBubbleNodeController[] _neighbors;
 
         public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView)
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
             Coordinate = bubbleNodeModel.Coordinate;
-            _neighbors = new IBubbleNodeController[] {TopRight, Right, BottomRight, BottomLeft, Left, TopLeft};
+           
         }
 
         public Coordinate Coordinate
@@ -36,26 +36,40 @@ namespace Assets.Code.Bubble
 
         public int GetFreeNeighbor(int index)
         {
-            var left = index;
-            var right = index + 1;
-            while (left >= 0)
+            if (index == 0)
             {
-                if (_neighbors[left] == null) return left;
-                left--;
+                Debug.Log($"is bottom left free {BottomLeft}");
             }
-
-            while (right < _neighbors.Length)
+            if (index == 1)
             {
-                if (_neighbors[right] == null) return right;
-                right++;
+                Debug.Log($"is left free {Left}");
             }
-
-            return -1;
+            if (index == 2)
+            {
+                Debug.Log($"is top left free {TopLeft}");
+            }
+            if (index == 3)
+            {
+                Debug.Log($"is top right free {TopRight}");
+            }
+            if (index == 4)
+            {
+                Debug.Log($"is right free {Right}");
+            }
+            if (index == 5)
+            {
+                Debug.Log($"is bottom right free {BottomRight}");
+            }
+            _neighbors = new IBubbleNodeController[] {TopRight, Right, BottomRight, BottomLeft, Left, TopLeft};
+            return index;
         }
 
         public StrikerView ConvertToStriker() => _bubbleNodeView.ConvertToStriker();
 
-        public void SetPosition(Vector2 position, bool animate = false, float speed = 1) => _bubbleNodeView.SetPosition(position, animate, speed);
+        public void SetPosition(Vector2 position, bool animate = false, float speed = 1)
+        {
+            _bubbleNodeView.SetPosition(position, animate, speed);
+        }
 
         public Vector2 Position
         {
@@ -65,6 +79,9 @@ namespace Assets.Code.Bubble
 
         public int Id => _bubbleNodeView.gameObject.GetInstanceID();
 
-        public override string ToString() => $"{_bubbleNodeView.name}";
+        public override string ToString()
+        {
+            return $"{_bubbleNodeView.name}";
+        }
     }
 }

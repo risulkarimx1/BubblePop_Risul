@@ -1,15 +1,18 @@
-﻿using DG.Tweening;
+﻿using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
     public class BubbleNodeView : MonoBehaviour
     {
+        public List<string> Neighbors; 
         private Transform _transform;
 
         private void Awake()
         {
             _transform = GetComponent<Transform>();
+            
         }
 
         public void SetPosition(Vector2 position, bool animate = false, float speed = 1)
