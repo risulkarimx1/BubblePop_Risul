@@ -15,7 +15,7 @@ namespace Assets.Code.Bubble
         public StrikerController(BubbleFactory bubbleNodeFactory, BubbleDataContainer bubbleDataContainer,
             Vector2 position, string color, SignalBus signalBus)
         {
-            _bubbleNodeController = bubbleNodeFactory.Create(BubbleUtility.ConvertColorToBubbleType(color), new Coordinate() {Row = -1, Col = -1});
+            _bubbleNodeController = bubbleNodeFactory.Create(BubbleUtility.ConvertColorToBubbleType(color));
             _strikerView = _bubbleNodeController.ConvertToStriker();
 
             _strikerView.Configure(bubbleDataContainer.StrikerPhysicsMaterial, position);

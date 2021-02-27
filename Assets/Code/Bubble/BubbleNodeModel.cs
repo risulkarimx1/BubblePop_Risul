@@ -9,17 +9,15 @@
         public BubbleNodeModel BottomRight { get; set; }
         public BubbleNodeModel BottomLeft { get; set; }
         public BubbleNodeModel Left { get; set; }
-        public Coordinate Coordinate { get; set; }
 
-        public BubbleNodeModel(BubbleType bubbleType, Coordinate coordinate)
+        public BubbleNodeModel(BubbleType bubbleType)
         {
             BubbleType = bubbleType;
-            Coordinate = coordinate;
         }
 
         public override string ToString()
         {
-            return $"BubbleType: {BubbleType}, [{Coordinate}]";
+            return $"BubbleType: {BubbleType}";
         }
     }
 }

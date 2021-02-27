@@ -21,6 +21,7 @@ namespace Assets.Code.Bubble
             _rigidBody = gameObject.AddComponent<Rigidbody2D>();
             _rigidBody.mass = 1;
             _rigidBody.gravityScale = 0;
+            _rigidBody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             _rigidBody.sharedMaterial = strikerPhysicsMaterial;
             _transform.position = position;
             _rigidBody.isKinematic = true;

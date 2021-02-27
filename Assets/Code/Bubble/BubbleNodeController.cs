@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
@@ -20,47 +21,49 @@ namespace Assets.Code.Bubble
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
-            Coordinate = bubbleNodeModel.Coordinate;
            
         }
-
-        public Coordinate Coordinate
-        {
-            get => _bubbleNodeModel.Coordinate;
-            set
-            {
-                _bubbleNodeModel.Coordinate = value;
-                _bubbleNodeView.SetPosition(_bubbleNodeModel.Coordinate);
-            }
-        }
-
+        
         public int GetFreeNeighbor(int index)
         {
+            _neighbors = new IBubbleNodeController[] { BottomLeft, Left, TopLeft, TopRight, Right, BottomRight };
+            
             if (index == 0)
             {
-                Debug.Log($"is bottom left free {BottomLeft}");
+                Debug.Log($"[{this}]: is bottom left free {BottomLeft}");
             }
             if (index == 1)
             {
-                Debug.Log($"is left free {Left}");
+                Debug.Log($"[{this}]: is left free {Left}");
             }
             if (index == 2)
             {
-                Debug.Log($"is top left free {TopLeft}");
+                Debug.Log($"[{this}]: is top left free {TopLeft}");
             }
             if (index == 3)
             {
-                Debug.Log($"is top right free {TopRight}");
+                Debug.Log($"[{this}]: is top right free {TopRight}");
             }
             if (index == 4)
             {
-                Debug.Log($"is right free {Right}");
+                Debug.Log($"[{this}]: is right free {Right}");
             }
             if (index == 5)
             {
-                Debug.Log($"is bottom right free {BottomRight}");
+                Debug.Log($"[{this}]: is bottom right free {BottomRight}");
             }
-            _neighbors = new IBubbleNodeController[] {TopRight, Right, BottomRight, BottomLeft, Left, TopLeft};
+
+            if (_neighbors[index] != null)
+            {
+                Debug.Log($"{index} is not free >>>>>>>>>>>>>>>");
+                for (int i = 0; i < 6; i++)
+                {
+                    if (_neighbors[i] == null) return i;
+                }
+                Debug.Break();
+            }
+
+           
             return index;
         }
 
@@ -71,6 +74,7 @@ namespace Assets.Code.Bubble
             _bubbleNodeView.SetPosition(position, animate, speed);
         }
 
+        
         public Vector2 Position
         {
             get => _bubbleNodeView.GetPosition();
@@ -82,6 +86,22 @@ namespace Assets.Code.Bubble
         public override string ToString()
         {
             return $"{_bubbleNodeView.name}";
+        }
+
+        public void SetName(string name)
+        {
+            _bubbleNodeView.name = name;
+        }
+
+        public void ShowNeighbor()
+        {
+            _bubbleNodeView.Neighbors = new List<string>();
+            _bubbleNodeView.Neighbors.Add($"TopRight: {TopRight}");
+            _bubbleNodeView.Neighbors.Add($"Right: {Right}");
+            _bubbleNodeView.Neighbors.Add($"Bottom Right: {BottomRight}");
+            _bubbleNodeView.Neighbors.Add($"Bottom Left: {BottomLeft}");
+            _bubbleNodeView.Neighbors.Add($"Left: {Left}");
+            _bubbleNodeView.Neighbors.Add($"Top Left: {TopLeft}");
         }
     }
 }

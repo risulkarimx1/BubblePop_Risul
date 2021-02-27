@@ -23,7 +23,7 @@ namespace Assets.Code.Installers
                 .AsSingle().NonLazy();
 
             // Bubble Factory
-            Container.BindFactory<BubbleType, Coordinate, IBubbleNodeController, BubbleFactory>()
+            Container.BindFactory<BubbleType, IBubbleNodeController, BubbleFactory>()
                 .FromFactory<BubbleNodeFactory>();
 
             // Striker Bubble Factory

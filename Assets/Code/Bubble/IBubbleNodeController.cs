@@ -5,7 +5,7 @@ namespace Assets.Code.Bubble
     public interface IBubbleNodeController
     {
         int Id { get; }
-        Coordinate Coordinate { get; set; }
+        // Coordinate Coordinate { get; set; }
         IBubbleNodeController TopLeft { get; set; }
         IBubbleNodeController TopRight { get; set; }
         IBubbleNodeController Right { get; set; }
@@ -18,5 +18,7 @@ namespace Assets.Code.Bubble
         Vector2 Position { get; set; }
         int GetFreeNeighbor(int index);
         string ToString();
+        void SetName(string name);
+        void ShowNeighbor();
     }
 }
