@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 using UniRx;
+using UniRx.Async.Triggers;
 using UnityEngine;
 
 namespace Assets.Code.Bubble
@@ -20,7 +22,7 @@ namespace Assets.Code.Bubble
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
-            _bubbleNodeModel.Value.Subscribe(val =>
+            _bubbleNodeModel.NodeValue.Subscribe(val =>
             {
                 _bubbleNodeView.ValueText.text = val.ToString();
             }).AddTo(_bubbleNodeView);
@@ -28,18 +30,48 @@ namespace Assets.Code.Bubble
 
         public StrikerView ConvertToStriker() => _bubbleNodeView.ConvertToStriker();
 
-        public void SetPosition(Vector2 position, bool animate = false, float speed = 1)
+        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null)
         {
-            _bubbleNodeView.SetPosition(position, animate, speed);
+            _bubbleNodeView.SetPosition(position, animate, speed, callback);
         }
 
         public Vector2 Position => _bubbleNodeView.GetPosition();
 
         public int Id => _bubbleNodeView.gameObject.GetInstanceID();
+        
+        public int NodeValue
+        {
+            get => _bubbleNodeModel.NodeValue.Value;
+            set => _bubbleNodeModel.NodeValue.Value = value;
+        }
 
         public override string ToString()
         {
+            if (_bubbleNodeView == null) return string.Empty;
             return $"{_bubbleNodeView.name}";
+        }
+
+        public IBubbleNodeController[] GetNeighbors()
+        {
+            return new IBubbleNodeController[] { TopRight, Right, BottomRight, BottomLeft, Left, TopLeft };
+        }
+
+        public void HideNode()
+        {
+            _bubbleNodeView.AnimateHide(() =>
+            {
+            });
+        }
+
+        public void Remove()
+        {
+            if (TopRight != null) TopRight.BottomLeft = null;
+            if (Right != null) Right.Left = null;
+            if (BottomRight != null) BottomRight.TopLeft = null;
+            if (BottomLeft != null) BottomLeft.TopRight = null;
+            if (Left != null) Left.Right = null;
+            if (TopLeft != null) TopLeft.BottomRight = null;
+            _bubbleNodeView.Remove();
         }
 
         public void SetName(string name)

@@ -15,14 +15,16 @@ namespace Assets.Code.Bubble
         private Dictionary<int, IBubbleNodeController> _viewToControllerMap;
 
         private BubbleAttachmentHelper _attachmentHelper;
+        private readonly NumericMergeHelper _numericMerge;
 
         public BubbleGraph(BubbleFactory bubbleFactory, LevelDataContext levelDataContext, SignalBus signalBus,
-            BubbleAttachmentHelper attachmentHelper)
+            BubbleAttachmentHelper attachmentHelper, NumericMergeHelper numericMerge)
         {
             _bubbleFactory = bubbleFactory;
             _levelDataContext = levelDataContext;
             _signalBus = signalBus;
             _attachmentHelper = attachmentHelper;
+            _numericMerge = numericMerge;
             _viewToControllerMap = new Dictionary<int, IBubbleNodeController>();
             _attachmentHelper.Configure(_viewToControllerMap);
             _signalBus.Subscribe<BubbleCollisionSignal>(OnBubbleCollided);
@@ -76,8 +78,17 @@ namespace Assets.Code.Bubble
             var strikerNodeController = bubbleCollisionSignal.StrikerNode;
 
             _viewToControllerMap.Add(strikerNodeController.Id, strikerNodeController);
-            _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController);
-            _ = _attachmentHelper.MapNeighbors(strikerNodeController);
+            _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController, () =>
+            {
+                _ = MapNeighbors(strikerNodeController);
+            });
+        }
+
+        private async UniTask MapNeighbors(IBubbleNodeController strikerNodeController)
+        {
+            await _attachmentHelper.MapNeighbors(strikerNodeController);
+            strikerNodeController.ShowNeighbor();
+            await _numericMerge.MergeNodes(strikerNodeController);
             strikerNodeController.ShowNeighbor();
         }
 

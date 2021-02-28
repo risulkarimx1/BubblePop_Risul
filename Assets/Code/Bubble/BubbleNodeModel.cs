@@ -11,7 +11,7 @@ namespace Assets.Code.Bubble
         [SerializeField]
         private BubbleType _bubbleType;
 
-        public ReactiveProperty<int> Value { get; set; } = new ReactiveProperty<int>(0);
+        public ReactiveProperty<int> NodeValue { get; set; } = new ReactiveProperty<int>(0);
 
         public BubbleType BubbleType
         {
@@ -22,7 +22,7 @@ namespace Assets.Code.Bubble
         public BubbleNodeModel(BubbleType bubbleType, int value)
         {
             BubbleType = bubbleType;
-            Value.Value = value;
+            NodeValue.Value = value;
         }
 
         public override string ToString()

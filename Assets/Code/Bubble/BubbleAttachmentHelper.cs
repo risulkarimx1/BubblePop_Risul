@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Assets.Code.Utils;
+using DG.Tweening;
 using UniRx.Async;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Assets.Code.Bubble
         }
 
         public void PlaceInGraph(Collision2D collision, IBubbleNodeController collisionNodeController,
-            IBubbleNodeController strikerNodeController)
+            IBubbleNodeController strikerNodeController, TweenCallback callback)
         {
             var contactPoint = collision.contacts[0].point;
             contactPoint = collisionNodeController.Position - contactPoint;
@@ -58,7 +59,7 @@ namespace Assets.Code.Bubble
                 position.y--;
             }
 
-            strikerNodeController.SetPosition(position, true,10);
+            strikerNodeController.SetPosition(position, true,10, callback);
             
         }
 
