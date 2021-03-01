@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Assets.Code.Utils;
 using DG.Tweening;
 using UniRx.Async;
@@ -8,9 +9,9 @@ namespace Assets.Code.Bubble
 {
     public class BubbleAttachmentHelper
     {
-        private Dictionary<int, IBubbleNodeController> _viewToControllerMap;
+        private ConcurrentDictionary<int, IBubbleNodeController> _viewToControllerMap;
 
-        public void Configure(Dictionary<int, IBubbleNodeController> viewToControllerMap)
+        public void Configure(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
         {
             _viewToControllerMap = viewToControllerMap;
         }
@@ -72,6 +73,8 @@ namespace Assets.Code.Bubble
             var leftDirection = new Vector2(-1, 0).normalized;
             var topLeftDirection = new Vector2(-1, 1).normalized;
 
+            if(strikerNodeController.IsRemoved) return;
+            
             strikerNodeController.TopRight = await MapNeighborAtDirection(strikerNodeController.Position, topRightDirection);
             strikerNodeController.Right = await MapNeighborAtDirection(strikerNodeController.Position, rightDirection);
             strikerNodeController.BottomRight = await MapNeighborAtDirection(strikerNodeController.Position, bottomRightDirection);

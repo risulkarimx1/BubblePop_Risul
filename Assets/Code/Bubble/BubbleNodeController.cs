@@ -3,6 +3,7 @@ using DG.Tweening;
 using UniRx;
 using UniRx.Async.Triggers;
 using UnityEngine;
+using UnityEngine.XR.WSA.Persistence;
 
 namespace Assets.Code.Bubble
 {
@@ -39,6 +40,8 @@ namespace Assets.Code.Bubble
 
         public int Id => _bubbleNodeView.gameObject.GetInstanceID();
         
+        public bool IsRemoved => _bubbleNodeView.isActiveAndEnabled == false;
+
         public int NodeValue
         {
             get => _bubbleNodeModel.NodeValue.Value;
@@ -56,15 +59,14 @@ namespace Assets.Code.Bubble
             return new IBubbleNodeController[] { TopRight, Right, BottomRight, BottomLeft, Left, TopLeft };
         }
 
-        public void HideNode()
+        public void HideNode(TweenCallback callback = null)
         {
-            _bubbleNodeView.AnimateHide(() =>
-            {
-            });
+            _bubbleNodeView.AnimateHide(callback);
         }
 
         public void Remove()
         {
+            if(IsRemoved) return;
             if (TopRight != null) TopRight.BottomLeft = null;
             if (Right != null) Right.Left = null;
             if (BottomRight != null) BottomRight.TopLeft = null;
@@ -72,6 +74,15 @@ namespace Assets.Code.Bubble
             if (Left != null) Left.Right = null;
             if (TopLeft != null) TopLeft.BottomRight = null;
             _bubbleNodeView.Remove();
+        }
+
+        public void ClearNeighbors()
+        {
+            var neighbors = GetNeighbors();
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                neighbors[i] = null;
+            }
         }
 
         public void SetName(string name)

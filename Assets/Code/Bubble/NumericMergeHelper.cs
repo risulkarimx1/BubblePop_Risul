@@ -2,12 +2,13 @@
 using System.Linq;
 using UniRx.Async;
 using UnityEngine;
+using Zenject;
 
 namespace Assets.Code.Bubble
 {
     public class NumericMergeHelper
     {
-        public async UniTask MergeNodes(IBubbleNodeController source)
+        public async UniTask<HashSet<IBubbleNodeController>> MergeNodes(IBubbleNodeController source)
         {
             var neighborsQue = new Queue<IBubbleNodeController>();
             neighborsQue.Enqueue(source);
@@ -30,15 +31,31 @@ namespace Assets.Code.Bubble
 
             var elements = visitedNodes.OrderByDescending(n => n.Position.y)
                 .ThenBy(n => n.Position.x).ToArray();
-            var willExplode = await MergeNodes(elements);
+
+            var nodesToRemove = new HashSet<IBubbleNodeController>();
+            for (int i = 1; i < elements.Length; i++)
+            {
+                nodesToRemove.Add(elements[i]);
+            }
+
+            var willExplode = await Merge(elements);
 
             if (willExplode)
             {
-                await ExplodeNodes(elements[0]);
+                var nodesToExplode = await ExplodeNodes(elements[0]);
+                foreach (var node in nodesToExplode)
+                {
+                    if (nodesToRemove.Contains(node) == false)
+                    {
+                        nodesToRemove.Add(node);
+                    }
+                }
             }
+
+            return nodesToRemove;
         }
 
-        private async UniTask<bool> MergeNodes(IBubbleNodeController[] elements)
+        private async UniTask<bool> Merge(IBubbleNodeController[] elements)
         {
             var willExplode = false;
             var index = elements.Length - 1;
@@ -63,24 +80,26 @@ namespace Assets.Code.Bubble
             }
 
             await UniTask.Delay(100);
-            for (int i = elements.Length - 1; i > 0; i--)
-            {
-                elements[i].Remove();
-            }
-
+            
             return willExplode;
         }
 
-        private async UniTask ExplodeNodes(IBubbleNodeController source)
+        private async UniTask<List<IBubbleNodeController>> ExplodeNodes(IBubbleNodeController source)
         {
+            var nodesToRemove = new List<IBubbleNodeController>();
             var neighbors = source.GetNeighbors().Where(n => n != null);
             foreach (var bubbleNodeController in neighbors)
             {
+                nodesToRemove.Add(bubbleNodeController);
                 bubbleNodeController.HideNode();
                 await UniTask.Delay(10);
             }
 
+            nodesToRemove.Add(source);
             source.HideNode();
+            await UniTask.Delay(30);
+
+            return nodesToRemove;
         }
     }
 }

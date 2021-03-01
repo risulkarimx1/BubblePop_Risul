@@ -6,6 +6,7 @@ namespace Assets.Code.Bubble
     public interface IBubbleNodeController
     {
         int Id { get; }
+        bool IsRemoved { get; }
         int NodeValue { get; set; }
         IBubbleNodeController TopLeft { get; set; }
         IBubbleNodeController TopRight { get; set; }
@@ -20,7 +21,8 @@ namespace Assets.Code.Bubble
         void ShowNeighbor();
         string ToString();
         IBubbleNodeController[] GetNeighbors();
-        void HideNode();
+        void HideNode(TweenCallback callback = null);
         void Remove();
+        void ClearNeighbors();
     }
 }

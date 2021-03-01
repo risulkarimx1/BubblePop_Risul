@@ -30,6 +30,7 @@ namespace Assets.Code.Installers
             Container.BindFactory<string, Vector2, StrikerController, StrikerController.Factory>();
 
             // Bubble Graph
+            Container.Bind<IsolatedNodesRemover>().AsSingle();
             Container.Bind<NumericMergeHelper>().AsSingle();
             Container.Bind<BubbleAttachmentHelper>().AsSingle();
             Container.Bind<BubbleGraph>().AsSingle();
