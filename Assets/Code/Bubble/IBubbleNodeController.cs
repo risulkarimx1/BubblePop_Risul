@@ -20,7 +20,6 @@ namespace Assets.Code.Bubble
         Vector2 Position { get; }
         void SetName(string name);
         void ShowNeighbor();
-        string ToString();
         IBubbleNodeController[] GetNeighbors();
         void HideNode(TweenCallback callback = null);
         void Remove();

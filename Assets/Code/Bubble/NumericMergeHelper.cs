@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UniRx.Async;
 using UnityEngine;
@@ -7,7 +8,12 @@ namespace Assets.Code.Bubble
 {
     public class NumericMergeHelper
     {
-        public async UniTask<HashSet<IBubbleNodeController>> MergeNodes(IBubbleNodeController source)
+        private bool isValidNode(IBubbleNodeController n, IBubbleNodeController source, HashSet<IBubbleNodeController> visitedNodes)
+        {
+            return  n != null && n.NodeValue == source.NodeValue && visitedNodes.Contains(n) == false;
+        }
+        
+        public IEnumerable<IBubbleNodeController> DfsPredicated(IBubbleNodeController source, Func<IBubbleNodeController, IBubbleNodeController, HashSet<IBubbleNodeController>, bool> isValid)
         {
             var neighborsQue = new Queue<IBubbleNodeController>();
             neighborsQue.Enqueue(source);
@@ -18,15 +24,37 @@ namespace Assets.Code.Bubble
                 if (visitedNodes.Contains(currentNode) == false) visitedNodes.Add(currentNode);
                 Debug.Log($"Dqd: {currentNode}");
                 var neighbors = currentNode.GetNeighbors()
-                    .Where(n => n != null
-                                && n.NodeValue == source.NodeValue
-                                && visitedNodes.Contains(n) == false);
+                    .Where(n=> isValid(n, source, visitedNodes));
                 foreach (var neighbor in neighbors)
                 {
                     neighborsQue.Enqueue(neighbor);
-                    await UniTask.Yield();
                 }
             }
+
+            return visitedNodes;
+        }
+        
+        public async UniTask<HashSet<IBubbleNodeController>> MergeNodes(IBubbleNodeController source)
+        {
+             var visitedNodes = DfsPredicated(source, isValidNode);
+            // var neighborsQue = new Queue<IBubbleNodeController>();
+            // neighborsQue.Enqueue(source);
+            // var visitedNodes = new HashSet<IBubbleNodeController>();
+            // while (neighborsQue.Count > 0)
+            // {
+            //     var currentNode = neighborsQue.Dequeue();
+            //     if (visitedNodes.Contains(currentNode) == false) visitedNodes.Add(currentNode);
+            //     Debug.Log($"Dqd: {currentNode}");
+            //     var neighbors = currentNode.GetNeighbors()
+            //         .Where(n => n != null
+            //                     && n.NodeValue == source.NodeValue
+            //                     && visitedNodes.Contains(n) == false);
+            //     foreach (var neighbor in neighbors)
+            //     {
+            //         neighborsQue.Enqueue(neighbor);
+            //         await UniTask.Yield();
+            //     }
+            // }
 
             var elements = visitedNodes.OrderByDescending(n => n.Position.y)
                 .ThenBy(n => n.Position.x).ToArray();
