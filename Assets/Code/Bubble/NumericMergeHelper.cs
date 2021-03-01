@@ -2,7 +2,6 @@
 using System.Linq;
 using UniRx.Async;
 using UnityEngine;
-using Zenject;
 
 namespace Assets.Code.Bubble
 {

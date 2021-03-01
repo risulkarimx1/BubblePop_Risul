@@ -8,6 +8,7 @@ namespace Assets.Code.Bubble
         int Id { get; }
         bool IsRemoved { get; }
         int NodeValue { get; set; }
+        BubbleType BubbleType { get;}
         IBubbleNodeController TopLeft { get; set; }
         IBubbleNodeController TopRight { get; set; }
         IBubbleNodeController Right { get; set; }

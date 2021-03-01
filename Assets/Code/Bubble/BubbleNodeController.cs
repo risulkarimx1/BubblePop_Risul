@@ -17,34 +17,35 @@ namespace Assets.Code.Bubble
         public IBubbleNodeController Left { get; set; }
         public IBubbleNodeController TopLeft { get; set; }
 
-        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView)
-        {
-            _bubbleNodeModel = bubbleNodeModel;
-            _bubbleNodeView = bubbleNodeView;
-            _bubbleNodeModel.NodeValue.Subscribe(val =>
-            {
-                _bubbleNodeView.ValueText.text = val.ToString();
-            }).AddTo(_bubbleNodeView);
-        }
-
-        public StrikerView ConvertToStriker() => _bubbleNodeView.ConvertToStriker();
-
-        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null)
-        {
-            _bubbleNodeView.SetPosition(position, animate, speed, callback);
-        }
-
-        public Vector2 Position => _bubbleNodeView.GetPosition();
 
         public int Id => _bubbleNodeView.gameObject.GetInstanceID();
-        
-        public bool IsRemoved => _bubbleNodeView.isActiveAndEnabled == false;
+        public BubbleType BubbleType => _bubbleNodeModel.BubbleType;
+        public Vector2 Position => _bubbleNodeView.GetPosition();
+        public StrikerView ConvertToStriker() => _bubbleNodeView.ConvertToStriker();
+
 
         public int NodeValue
         {
             get => _bubbleNodeModel.NodeValue.Value;
             set => _bubbleNodeModel.NodeValue.Value = value;
         }
+
+
+        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView)
+        {
+            _bubbleNodeModel = bubbleNodeModel;
+            _bubbleNodeView = bubbleNodeView;
+            _bubbleNodeModel.NodeValue.Subscribe(val => { _bubbleNodeView.ValueText.text = val.ToString(); })
+                .AddTo(_bubbleNodeView);
+        }
+
+
+        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null)
+        {
+            _bubbleNodeView.SetPosition(position, animate, speed, callback);
+        }
+
+        public bool IsRemoved => _bubbleNodeView.isActiveAndEnabled == false;
 
         public override string ToString()
         {
@@ -54,7 +55,7 @@ namespace Assets.Code.Bubble
 
         public IBubbleNodeController[] GetNeighbors()
         {
-            return new IBubbleNodeController[] { TopRight, Right, BottomRight, BottomLeft, Left, TopLeft };
+            return new IBubbleNodeController[] {TopRight, Right, BottomRight, BottomLeft, Left, TopLeft};
         }
 
         public void SetNeighbor(int index, IBubbleNodeController node)
@@ -74,7 +75,7 @@ namespace Assets.Code.Bubble
 
         public void Remove()
         {
-            if(IsRemoved) return;
+            if (IsRemoved) return;
             if (TopRight != null) TopRight.BottomLeft = null;
             if (Right != null) Right.Left = null;
             if (BottomRight != null) BottomRight.TopLeft = null;
@@ -88,7 +89,7 @@ namespace Assets.Code.Bubble
         {
             var targetPosition = Position;
             targetPosition.y = -100;
-            SetPosition(targetPosition,true, 0.1f, callback);
+            SetPosition(targetPosition, true, 0.1f, callback);
         }
 
         public void ClearNeighbors()

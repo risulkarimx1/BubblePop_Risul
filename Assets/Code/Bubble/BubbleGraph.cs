@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Assets.Code.LevelGeneration;
 using Assets.Code.Signals;
 using UniRx.Async;
-using UnityEditor;
 using UnityEngine;
 using Zenject;
 
@@ -18,18 +17,25 @@ namespace Assets.Code.Bubble
         private ConcurrentDictionary<int, IBubbleNodeController> _viewToControllerMap;
 
         private BubbleAttachmentHelper _attachmentHelper;
-        private readonly NumericMergeHelper _numericMerge;
+        private readonly NumericMergeHelper _numericMergeHelper;
         private readonly NodeIsolationHelper _nodeIsolationHelper;
+        private readonly ColorMergeHelper _colorMergeHelper;
 
-        public BubbleGraph(BubbleFactory bubbleFactory, LevelDataContext levelDataContext, SignalBus signalBus,
-            BubbleAttachmentHelper attachmentHelper, NumericMergeHelper numericMerge, NodeIsolationHelper nodeIsolationHelper)
+        public BubbleGraph(BubbleFactory bubbleFactory, 
+            LevelDataContext levelDataContext, 
+            SignalBus signalBus,
+            BubbleAttachmentHelper attachmentHelper, 
+            NumericMergeHelper numericMergeHelper, 
+            NodeIsolationHelper nodeIsolationHelper, 
+            ColorMergeHelper colorMergeHelper)
         {
             _bubbleFactory = bubbleFactory;
             _levelDataContext = levelDataContext;
             _signalBus = signalBus;
             _attachmentHelper = attachmentHelper;
-            _numericMerge = numericMerge;
+            _numericMergeHelper = numericMergeHelper;
             _nodeIsolationHelper = nodeIsolationHelper;
+            _colorMergeHelper = colorMergeHelper;
             _viewToControllerMap = new ConcurrentDictionary<int, IBubbleNodeController>();
             _attachmentHelper.Configure(_viewToControllerMap);
             _signalBus.Subscribe<BubbleCollisionSignal>(OnBubbleCollided);
@@ -83,7 +89,6 @@ namespace Assets.Code.Bubble
                     await _attachmentHelper.MapNeighbors(bubbleNodeController.Value);
                     bubbleNodeController.Value.ShowNeighbor();
                 }
-
             }
         }
 
@@ -103,11 +108,19 @@ namespace Assets.Code.Bubble
         private async UniTask MapNeighbors(IBubbleNodeController strikerNodeController)
         {
             await _attachmentHelper.MapNeighbors(strikerNodeController);
-            var nodesToRemove = await _numericMerge.MergeNodes(strikerNodeController);
-            RemoveNodes(nodesToRemove);
+            var numericallyMergedNodes = await _numericMergeHelper.MergeNodes(strikerNodeController);
+            RemoveNodes(numericallyMergedNodes);
             await RemapNeighbors();
+
+            var colorMergedNodes = await _colorMergeHelper.MergeNodes(strikerNodeController);
+            if (colorMergedNodes != null)
+            {
+                RemoveNodes(colorMergedNodes);
+            }
+                
+            
             var isolatedNodes = _nodeIsolationHelper.GetIsolatedNodes(_viewToControllerMap);
-            await DropNodes(isolatedNodes);
+            await DropAndRemoveNodes(isolatedNodes);
             await RemapNeighbors();
         }
 
@@ -127,18 +140,18 @@ namespace Assets.Code.Bubble
             {
                 _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
                 Debug.Log($"Removed node: {removedNode}");
-                removedNode.Remove();
+                removedNode?.Remove();
             }
         }
 
-        private async UniTask DropNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
+        private async UniTask DropAndRemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
         {
             foreach (var node in nodesToRemove)
             {
                 node.DropNode(() =>
                 {
                     _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
-                    removedNode.Remove();
+                    removedNode?.Remove();
                 });
                 await UniTask.Yield();
             }
