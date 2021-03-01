@@ -3,16 +3,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UniRx.Async;
 using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
-    public class IsolatedNodesRemover
+    public class NodeIsolationHelper
     {
         private float _ceilingY = 0;
 
-        public async UniTask<List<IBubbleNodeController>> RemoveIsolatedNodes(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
+        public List<IBubbleNodeController> GetIsolatedNodes(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
         {
             var objectsToRemove = new List<IBubbleNodeController>();
             var visitedNodes = new Dictionary<IBubbleNodeController, bool>();
@@ -26,7 +25,7 @@ namespace Assets.Code.Bubble
             {
                 if (visitedNodes[node.Value] == false)
                 {
-                    var connectedNodes = await GetConnectedNodes(node.Value, visitedNodes);
+                    var connectedNodes =  GetConnectedNodes(node.Value, visitedNodes);
                     if (connectedNodes.Count > 0)
                     {
                         var connectedToCeiling = IsConnectedToCeiling(connectedNodes);
@@ -49,7 +48,7 @@ namespace Assets.Code.Bubble
             return objectsToRemove;
         }
 
-        private async UniTask<HashSet<IBubbleNodeController>> GetConnectedNodes(IBubbleNodeController sourceNode, Dictionary<IBubbleNodeController, bool> visitedNode)
+        private HashSet<IBubbleNodeController> GetConnectedNodes(IBubbleNodeController sourceNode, Dictionary<IBubbleNodeController, bool> visitedNode)
         {
             var queue = new Queue<IBubbleNodeController>();
             visitedNode[sourceNode] = true;

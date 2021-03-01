@@ -1,5 +1,6 @@
 using Assets.Code.Bubble;
 using Assets.Code.Managers;
+using Assets.Code.Signals;
 using Assets.Code.Utils;
 using UnityEngine;
 using Zenject;
@@ -14,6 +15,7 @@ namespace Assets.Code.Installers
             // signals
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<BubbleCollisionSignal>();
+            Container.DeclareSignal<CeilingCollisionSignal>();
             
             // camera
             Container.Bind<Camera>().WithId(Constants.MainCameraId).FromInstance(Camera.main).AsSingle();
@@ -30,7 +32,7 @@ namespace Assets.Code.Installers
             Container.BindFactory<string, Vector2, StrikerController, StrikerController.Factory>();
 
             // Bubble Graph
-            Container.Bind<IsolatedNodesRemover>().AsSingle();
+            Container.Bind<NodeIsolationHelper>().AsSingle();
             Container.Bind<NumericMergeHelper>().AsSingle();
             Container.Bind<BubbleAttachmentHelper>().AsSingle();
             Container.Bind<BubbleGraph>().AsSingle();

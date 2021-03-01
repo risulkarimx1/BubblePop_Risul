@@ -9,5 +9,6 @@ namespace Assets.Code.Utils
         public const string MainCameraId = "MainCamera";
         public static string BubbleTag = "Bubble";
         public static LayerMask BubbleLayerMask = 1 << 9;
+        public static string CeilingTag = "Ceiling";
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Code.Signals;
 using Assets.Code.Utils;
 using UniRx;
 using UnityEngine;
@@ -31,6 +32,13 @@ namespace Assets.Code.Bubble
                         StrikerNode = _bubbleNodeController,
                     });
 
+                    DestroyComponent();
+                }else if (other.collider.CompareTag(Constants.CeilingTag))
+                {
+                    signalBus.Fire(new CeilingCollisionSignal()
+                    {
+                        StrikerNode = _bubbleNodeController
+                    });
                     DestroyComponent();
                 }
             }).AddTo(_strikerView);

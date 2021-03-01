@@ -23,6 +23,8 @@ namespace Assets.Code.Bubble
         IBubbleNodeController[] GetNeighbors();
         void HideNode(TweenCallback callback = null);
         void Remove();
+        void DropNode(TweenCallback callback = null);
+        void SetNeighbor(int index, IBubbleNodeController node);
         void ClearNeighbors();
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Assets.Code.LevelGeneration;
+using Assets.Code.Signals;
 using UniRx.Async;
 using UnityEditor;
 using UnityEngine;
@@ -18,20 +19,21 @@ namespace Assets.Code.Bubble
 
         private BubbleAttachmentHelper _attachmentHelper;
         private readonly NumericMergeHelper _numericMerge;
-        private readonly IsolatedNodesRemover _isolatedNodesRemover;
+        private readonly NodeIsolationHelper _nodeIsolationHelper;
 
         public BubbleGraph(BubbleFactory bubbleFactory, LevelDataContext levelDataContext, SignalBus signalBus,
-            BubbleAttachmentHelper attachmentHelper, NumericMergeHelper numericMerge, IsolatedNodesRemover isolatedNodesRemover)
+            BubbleAttachmentHelper attachmentHelper, NumericMergeHelper numericMerge, NodeIsolationHelper nodeIsolationHelper)
         {
             _bubbleFactory = bubbleFactory;
             _levelDataContext = levelDataContext;
             _signalBus = signalBus;
             _attachmentHelper = attachmentHelper;
             _numericMerge = numericMerge;
-            _isolatedNodesRemover = isolatedNodesRemover;
+            _nodeIsolationHelper = nodeIsolationHelper;
             _viewToControllerMap = new ConcurrentDictionary<int, IBubbleNodeController>();
             _attachmentHelper.Configure(_viewToControllerMap);
             _signalBus.Subscribe<BubbleCollisionSignal>(OnBubbleCollided);
+            _signalBus.Subscribe<CeilingCollisionSignal>(OnCeilingCollision);
         }
 
         public async UniTask Initialize()
@@ -84,7 +86,7 @@ namespace Assets.Code.Bubble
 
             }
         }
-        
+
         private void OnBubbleCollided(BubbleCollisionSignal bubbleCollisionSignal)
         {
             var collision = bubbleCollisionSignal.CollisionObject;
@@ -103,17 +105,20 @@ namespace Assets.Code.Bubble
             await _attachmentHelper.MapNeighbors(strikerNodeController);
             var nodesToRemove = await _numericMerge.MergeNodes(strikerNodeController);
             RemoveNodes(nodesToRemove);
-            // foreach (var node in nodesToRemove)
-            // {
-            //     _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
-            //     Debug.Log($"Removed node: {removedNode}");
-            //     removedNode.Remove();
-            // }
             await RemapNeighbors();
-            var isolatedNodes = await _isolatedNodesRemover.RemoveIsolatedNodes(_viewToControllerMap);
-            RemoveNodes(isolatedNodes);
+            var isolatedNodes = _nodeIsolationHelper.GetIsolatedNodes(_viewToControllerMap);
+            await DropNodes(isolatedNodes);
             await RemapNeighbors();
-            // strikerNodeController.ShowNeighbor();
+        }
+
+        private void OnCeilingCollision(CeilingCollisionSignal ceilingCollisionSignal)
+        {
+            var node = ceilingCollisionSignal.StrikerNode;
+            var position = node.Position;
+            position.y = 0;
+            position.x = (float) Math.Round(position.x, 0);
+            node.SetPosition(position, true, 10);
+            AddNode(node);
         }
 
         private void RemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
@@ -125,7 +130,20 @@ namespace Assets.Code.Bubble
                 removedNode.Remove();
             }
         }
-        
+
+        private async UniTask DropNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
+        {
+            foreach (var node in nodesToRemove)
+            {
+                node.DropNode(() =>
+                {
+                    _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
+                    removedNode.Remove();
+                });
+                await UniTask.Yield();
+            }
+        }
+
         public void AddNode(IBubbleNodeController bubbleController)
         {
             _viewToControllerMap.TryAdd(bubbleController.Id, bubbleController);
@@ -134,6 +152,7 @@ namespace Assets.Code.Bubble
         public void Dispose()
         {
             _signalBus.Unsubscribe<BubbleCollisionSignal>(OnBubbleCollided);
+            _signalBus.Unsubscribe<CeilingCollisionSignal>(OnCeilingCollision);
         }
     }
 }

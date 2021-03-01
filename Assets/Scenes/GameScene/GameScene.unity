@@ -306,7 +306,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419468033}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -6, z: -1}
+  m_LocalPosition: {x: 2, y: -6.4, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -324,8 +324,8 @@ GameObject:
   - component: {fileID: 786392662}
   - component: {fileID: 786392661}
   m_Layer: 0
-  m_Name: RightBoudary (1)
-  m_TagString: Untagged
+  m_Name: Ceiling
+  m_TagString: Ceiling
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -414,7 +414,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786392660}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.007, y: 1.17, z: 0}
+  m_LocalPosition: {x: 2.007, y: 0.78, z: 0}
   m_LocalScale: {x: 8.460245, y: 0.3668332, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

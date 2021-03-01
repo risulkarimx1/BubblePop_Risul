@@ -1,5 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Assets.Code.Utils;
 using DG.Tweening;
 using UniRx.Async;
@@ -74,15 +76,23 @@ namespace Assets.Code.Bubble
             var topLeftDirection = new Vector2(-1, 1).normalized;
 
             if(strikerNodeController.IsRemoved) return;
-            
-            strikerNodeController.TopRight = await MapNeighborAtDirection(strikerNodeController.Position, topRightDirection);
-            strikerNodeController.Right = await MapNeighborAtDirection(strikerNodeController.Position, rightDirection);
-            strikerNodeController.BottomRight = await MapNeighborAtDirection(strikerNodeController.Position, bottomRightDirection);
 
-            strikerNodeController.BottomLeft = await MapNeighborAtDirection(strikerNodeController.Position, bottomLeftDirection);
-            strikerNodeController.Left = await MapNeighborAtDirection(strikerNodeController.Position, leftDirection);
-            strikerNodeController.TopLeft = await MapNeighborAtDirection(strikerNodeController.Position, topLeftDirection);
+            var tasks = new List<UniTask<IBubbleNodeController>>
+            {
+                MapNeighborAtDirection(strikerNodeController.Position, topRightDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, rightDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, bottomRightDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, bottomLeftDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, leftDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, topLeftDirection)
+            };
 
+            await UniTask.WhenAll(tasks);
+
+            for (var i = 0; i < 6; i++)
+            {
+                strikerNodeController.SetNeighbor(i, tasks[i].Result);
+            }
         }
 
         public async UniTask<IBubbleNodeController> MapNeighborAtDirection(Vector2 origin, Vector2 direction)
