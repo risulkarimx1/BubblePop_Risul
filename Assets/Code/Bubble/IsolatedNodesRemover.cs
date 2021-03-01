@@ -12,8 +12,9 @@ namespace Assets.Code.Bubble
     {
         private float _ceilingY = 0;
 
-        public async UniTask RemoveIsolatedNodes(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
+        public async UniTask<List<IBubbleNodeController>> RemoveIsolatedNodes(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
         {
+            var objectsToRemove = new List<IBubbleNodeController>();
             var visitedNodes = new Dictionary<IBubbleNodeController, bool>();
 
             foreach (var bubbleNodeController in viewToControllerMap)
@@ -25,11 +26,14 @@ namespace Assets.Code.Bubble
             {
                 if (visitedNodes[node.Value] == false)
                 {
-                    var connectedNodes = await GetConnectedNodes(node.Value);
+                    var connectedNodes = await GetConnectedNodes(node.Value, visitedNodes);
                     if (connectedNodes.Count > 0)
                     {
-                        MarkConnectedNodesAsVisited(visitedNodes, connectedNodes);
                         var connectedToCeiling = IsConnectedToCeiling(connectedNodes);
+                        if (IsConnectedToCeiling(connectedNodes) == false)
+                        {
+                            objectsToRemove.AddRange(connectedNodes);
+                        }
                         var sb = new StringBuilder();
                         foreach (var connectedNode in connectedNodes)
                         {
@@ -41,39 +45,33 @@ namespace Assets.Code.Bubble
                     }
                 }
             }
+
+            return objectsToRemove;
         }
 
-        private async UniTask<HashSet<IBubbleNodeController>> GetConnectedNodes(IBubbleNodeController node)
+        private async UniTask<HashSet<IBubbleNodeController>> GetConnectedNodes(IBubbleNodeController sourceNode, Dictionary<IBubbleNodeController, bool> visitedNode)
         {
             var queue = new Queue<IBubbleNodeController>();
-            var visitedNode = new HashSet<IBubbleNodeController>();
-            if (visitedNode.Contains(node) == false) visitedNode.Add(node);
-            queue.Enqueue(node);
+            visitedNode[sourceNode] = true;
+            queue.Enqueue(sourceNode);
+
+            var connectedNodes = new HashSet<IBubbleNodeController>();
             while (queue.Count > 0)
             {
                 var currentNode = queue.Dequeue();
-                await UniTask.Delay(1000);
                 var neighbors = currentNode.GetNeighbors().Where(n => n != null);
+                if (connectedNodes.Contains(currentNode) == false) connectedNodes.Add(currentNode);
                 foreach (var neighborNode in neighbors)
                 {
-                    if (visitedNode.Contains(neighborNode) == false)
+                    if (visitedNode[neighborNode] == false)
                     {
                         queue.Enqueue(neighborNode);
-                        visitedNode.Add(currentNode);
+                        visitedNode[neighborNode] = true;
                     }
                 }
             }
 
-            return visitedNode;
-        }
-
-        private void MarkConnectedNodesAsVisited(Dictionary<IBubbleNodeController, bool> visitedNode,
-            HashSet<IBubbleNodeController> connectedNodes)
-        {
-            foreach (var bubbleNodeController in connectedNodes)
-            {
-                visitedNode[bubbleNodeController] = true;
-            }
+            return connectedNodes;
         }
 
         private bool IsConnectedToCeiling(HashSet<IBubbleNodeController> connectedNodes)

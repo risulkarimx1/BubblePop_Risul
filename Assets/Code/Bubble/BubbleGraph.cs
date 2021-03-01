@@ -102,17 +102,30 @@ namespace Assets.Code.Bubble
         {
             await _attachmentHelper.MapNeighbors(strikerNodeController);
             var nodesToRemove = await _numericMerge.MergeNodes(strikerNodeController);
+            RemoveNodes(nodesToRemove);
+            // foreach (var node in nodesToRemove)
+            // {
+            //     _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
+            //     Debug.Log($"Removed node: {removedNode}");
+            //     removedNode.Remove();
+            // }
+            await RemapNeighbors();
+            var isolatedNodes = await _isolatedNodesRemover.RemoveIsolatedNodes(_viewToControllerMap);
+            RemoveNodes(isolatedNodes);
+            await RemapNeighbors();
+            // strikerNodeController.ShowNeighbor();
+        }
+
+        private void RemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
+        {
             foreach (var node in nodesToRemove)
             {
                 _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
                 Debug.Log($"Removed node: {removedNode}");
                 removedNode.Remove();
             }
-            await RemapNeighbors();
-            // await _isolatedNodesRemover.RemoveIsolatedNodes(_viewToControllerMap);
-            // strikerNodeController.ShowNeighbor();
         }
-
+        
         public void AddNode(IBubbleNodeController bubbleController)
         {
             _viewToControllerMap.TryAdd(bubbleController.Id, bubbleController);
