@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Assets.Code.Utils;
 using UnityEngine;
 using Zenject;
 
 namespace Assets.Code.ShootEffect
 {
-    public class MouseShootEffect : IInitializable, ITickable, IDisposable
+    public class MouseShootController : ITickable
     {
+        private readonly MouseShootView _mouseShootView;
         private Camera _mainCamera;
 
         private List<Vector2> _dots;
         private List<GameObject> _dotObjects;
 
-        public MouseShootEffect(CameraEffects cameraEffects)
+        public MouseShootController(CameraEffects cameraEffects, MouseShootView mouseShootView)
         {
+            _mouseShootView = mouseShootView;
             _mainCamera = cameraEffects.MainCamera;
             _dots = new List<Vector2>();
             _dotObjects = new List<GameObject>();
@@ -25,13 +26,10 @@ namespace Assets.Code.ShootEffect
                 dotObject.SetActive(false);
             }
         }
-
-        public void Initialize()
-        {
-        }
-
+        
         public void Tick()
         {
+            // on clicked
             if (Input.GetMouseButton(0))
             {
                 if (_dots == null) return;
@@ -39,9 +37,13 @@ namespace Assets.Code.ShootEffect
                 var touch = Input.mousePosition;
                 touch.z = Mathf.Abs(0.0f - _mainCamera.transform.position.z);
                 touch = _mainCamera.ScreenToWorldPoint(touch);
+                if (touch.y < Constants.FirstPosition.y + 1)
+                {
+                    touch.y = Constants.FirstPosition.y + 1;
+                }
                 var direction = (Vector2) touch - Constants.FirstPosition;
 
-                RaycastHit2D hit = Physics2D.Raycast(Constants.FirstPosition, direction);
+                var hit = Physics2D.Raycast(Constants.FirstPosition, direction, 1000, Constants.InputEffectsMask);
 
                 if (hit.collider == null) return;
 
@@ -49,7 +51,7 @@ namespace Assets.Code.ShootEffect
 
                 if (hit.collider.CompareTag(Constants.SideWallTag))
                 {
-                    PerformReycastOnWall(hit, direction);
+                    PerformRayCastOnWall(hit, direction);
                 }
                 else
                 {
@@ -58,6 +60,7 @@ namespace Assets.Code.ShootEffect
                 }
             }
 
+            // on release
             else if (Input.GetMouseButtonUp(0))
             {
                 if (_dots.Count < 2)
@@ -65,26 +68,27 @@ namespace Assets.Code.ShootEffect
                     return;
                 }
 
+                _mouseShootView.Clear();
                 _dots.Clear();
                 _dotObjects.ForEach(g => g.SetActive(false));
             }
         }
 
 
-        void PerformReycastOnWall(RaycastHit2D previousHit, Vector2 directionIn)
+        void PerformRayCastOnWall(RaycastHit2D previousHit, Vector2 directionIn)
         {
             _dots.Add(previousHit.point);
             var normal = Mathf.Atan2(previousHit.normal.y, previousHit.normal.x);
             var newDirection = normal + (normal - Mathf.Atan2(directionIn.y, directionIn.x));
             var reflection = new Vector2(-Mathf.Cos(newDirection), -Mathf.Sin(newDirection));
             var newCastPoint = previousHit.point + (2 * reflection);
-            var hit2 = Physics2D.Raycast(newCastPoint, reflection);
+            var hit2 = Physics2D.Raycast(newCastPoint, reflection, 1000, Constants.InputEffectsMask);
 
             if (hit2.collider != null)
             {
                 if (hit2.collider.CompareTag(Constants.SideWallTag))
                 {
-                    PerformReycastOnWall(hit2, reflection);
+                    PerformRayCastOnWall(hit2, reflection);
                 }
                 else
                 {
@@ -111,16 +115,13 @@ namespace Assets.Code.ShootEffect
             {
                 gameObject.SetActive(false);
             }
-
+            
+            _mouseShootView.TrySetPointsCount(_dots.Count);
+            
             for (var i = 0; i < _dots.Count; i++)
             {
-                _dotObjects[i].SetActive(true);
-                _dotObjects[i].transform.position = _dots[i];
+                _mouseShootView.SetPosition(i, _dots[i]);
             }
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

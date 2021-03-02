@@ -44,7 +44,7 @@ namespace Assets.Code.Installers
 
             // Mouse Input
             Container.Bind<MouseShootView>().FromComponentInNewPrefab(_mouseShootView).AsSingle();
-            Container.BindInterfacesAndSelfTo<MouseShootEffect>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<MouseShootController>().AsSingle().NonLazy();
             // Managers
             Container.BindInterfacesAndSelfTo<StrikerManager>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GameSceneManager>().AsSingle();

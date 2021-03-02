@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Code.ShootEffect
 {
@@ -14,19 +13,6 @@ namespace Assets.Code.ShootEffect
             _lineRenderer.enabled = false;
         }
 
-        public void Showlines(Vector2[] points)
-        {
-            _lineRenderer.enabled = true;
-            _lineRenderer.positionCount = points.Length;
-            for (var i = 0; i < points.Length; i++)
-            {
-                var vector3Point = points[i];
-                _lineRenderer.SetPosition(i, vector3Point);
-            }
-
-            _showLine = true;
-        }
-
         public void Tick(Vector2 [] updatedPositions)
         {
             if(_showLine == false) return;
@@ -37,7 +23,33 @@ namespace Assets.Code.ShootEffect
             }
         }
 
-        public void HideLineRender()
+        public void TrySetPointsCount(int dotsCount)
+        {
+            if (_lineRenderer.enabled == false)
+            {
+                _lineRenderer.enabled = true;
+            }
+              
+            if(dotsCount == _lineRenderer.positionCount) return;
+            while (dotsCount != _lineRenderer.positionCount)
+            {
+                if (dotsCount > _lineRenderer.positionCount)
+                {
+                    _lineRenderer.positionCount++;
+                }
+                else
+                {
+                    _lineRenderer.positionCount--;
+                }
+            }
+        }
+
+        public void SetPosition(int i, Vector2 dot)
+        {
+            _lineRenderer.SetPosition(i, dot);
+        }
+
+        public void Clear()
         {
             _lineRenderer.positionCount = 0;
             _lineRenderer.enabled = false;

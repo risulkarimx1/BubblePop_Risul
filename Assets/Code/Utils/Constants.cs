@@ -6,10 +6,10 @@ namespace Assets.Code.Utils
     {
         public const string LevelDataContainerPath = "LevelData/LevelDataContainer";
         public const string BubbleDataContainerPath = "BubbleData/BubbleDataContainer";
-        public const string MainCameraId = "MainCamera";
         public static string BubbleTag = "Bubble";
         public static string SideWallTag = "SideWall";
         public static LayerMask BubbleLayerMask = 1 << 9;
+        public static LayerMask InputEffectsMask = 3 << 9;
         public static string CeilingTag = "Ceiling";
 
         // Bubble positions
