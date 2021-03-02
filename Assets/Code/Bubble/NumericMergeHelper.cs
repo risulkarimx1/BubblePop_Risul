@@ -1,60 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UniRx.Async;
-using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
     public class NumericMergeHelper
     {
-        private bool isValidNode(IBubbleNodeController n, IBubbleNodeController source, HashSet<IBubbleNodeController> visitedNodes)
+        private bool IsValidNode(IBubbleNodeController n, IBubbleNodeController source, HashSet<IBubbleNodeController> visitedNodes)
         {
-            return  n != null && n.NodeValue == source.NodeValue && visitedNodes.Contains(n) == false;
+            return n != null && n.NodeValue == source.NodeValue && visitedNodes.Contains(n) == false;
         }
-        
-        public IEnumerable<IBubbleNodeController> DfsPredicated(IBubbleNodeController source, Func<IBubbleNodeController, IBubbleNodeController, HashSet<IBubbleNodeController>, bool> isValid)
-        {
-            var neighborsQue = new Queue<IBubbleNodeController>();
-            neighborsQue.Enqueue(source);
-            var visitedNodes = new HashSet<IBubbleNodeController>();
-            while (neighborsQue.Count > 0)
-            {
-                var currentNode = neighborsQue.Dequeue();
-                if (visitedNodes.Contains(currentNode) == false) visitedNodes.Add(currentNode);
-                Debug.Log($"Dqd: {currentNode}");
-                var neighbors = currentNode.GetNeighbors()
-                    .Where(n=> isValid(n, source, visitedNodes));
-                foreach (var neighbor in neighbors)
-                {
-                    neighborsQue.Enqueue(neighbor);
-                }
-            }
 
-            return visitedNodes;
-        }
-        
         public async UniTask<HashSet<IBubbleNodeController>> MergeNodes(IBubbleNodeController source)
         {
-             var visitedNodes = DfsPredicated(source, isValidNode);
-            // var neighborsQue = new Queue<IBubbleNodeController>();
-            // neighborsQue.Enqueue(source);
-            // var visitedNodes = new HashSet<IBubbleNodeController>();
-            // while (neighborsQue.Count > 0)
-            // {
-            //     var currentNode = neighborsQue.Dequeue();
-            //     if (visitedNodes.Contains(currentNode) == false) visitedNodes.Add(currentNode);
-            //     Debug.Log($"Dqd: {currentNode}");
-            //     var neighbors = currentNode.GetNeighbors()
-            //         .Where(n => n != null
-            //                     && n.NodeValue == source.NodeValue
-            //                     && visitedNodes.Contains(n) == false);
-            //     foreach (var neighbor in neighbors)
-            //     {
-            //         neighborsQue.Enqueue(neighbor);
-            //         await UniTask.Yield();
-            //     }
-            // }
+            var visitedNodes = BubbleUtility.Dfs(source, IsValidNode);
 
             var elements = visitedNodes.OrderByDescending(n => n.Position.y)
                 .ThenBy(n => n.Position.x).ToArray();
@@ -65,24 +24,22 @@ namespace Assets.Code.Bubble
                 nodesToRemove.Add(elements[i]);
             }
 
-            var willExplode = await Merge(elements);
+            var willExplode = await PerformNumericMerge(elements);
 
-            if (willExplode)
+            if (!willExplode) return nodesToRemove;
+
+            var nodesToExplode = await GetExplodableNodes(elements[0]);
+            foreach (var node in nodesToExplode)
             {
-                var nodesToExplode = await ExplodeNodes(elements[0]);
-                foreach (var node in nodesToExplode)
-                {
-                    if (nodesToRemove.Contains(node) == false)
-                    {
-                        nodesToRemove.Add(node);
-                    }
-                }
+                if (nodesToRemove.Contains(node)) continue;
+
+                nodesToRemove.Add(node);
             }
 
             return nodesToRemove;
         }
 
-        private async UniTask<bool> Merge(IBubbleNodeController[] elements)
+        private async UniTask<bool> PerformNumericMerge(IBubbleNodeController[] elements)
         {
             var willExplode = false;
             var index = elements.Length - 1;
@@ -101,30 +58,28 @@ namespace Assets.Code.Bubble
                         }
                     });
                 await UniTask.Delay(100);
-
                 current.HideNode();
                 index--;
             }
 
             await UniTask.Delay(100);
-            
             return willExplode;
         }
 
-        private async UniTask<List<IBubbleNodeController>> ExplodeNodes(IBubbleNodeController source)
+        private async UniTask<List<IBubbleNodeController>> GetExplodableNodes(IBubbleNodeController source)
         {
             var nodesToRemove = new List<IBubbleNodeController>();
             var neighbors = source.GetNeighbors().Where(n => n != null);
             foreach (var bubbleNodeController in neighbors)
             {
                 nodesToRemove.Add(bubbleNodeController);
-                bubbleNodeController.HideNode();
+                bubbleNodeController.HideNode(); // replace with explode nodes
                 await UniTask.Delay(10);
             }
 
             nodesToRemove.Add(source);
             source.HideNode();
-            await UniTask.Delay(30);
+            await UniTask.Delay(10);
 
             return nodesToRemove;
         }

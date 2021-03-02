@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Assets.Code.Utils;
 using DG.Tweening;
 using UniRx.Async;
@@ -11,6 +9,13 @@ namespace Assets.Code.Bubble
 {
     public class BubbleAttachmentHelper
     {
+        private readonly Vector2 _topRightDirection = new Vector2(1, 1).normalized;
+        private readonly Vector2 _rightDirection = new Vector2(1, 0).normalized;
+        private readonly Vector2 _bottomRightDirection = new Vector2(1, -1).normalized;
+        private readonly Vector2 _bottomLeftDirection = new Vector2(-1, -1).normalized;
+        private readonly Vector2 _leftDirection = new Vector2(-1, 0).normalized;
+        private readonly Vector2 _topLeftDirection = new Vector2(-1, 1).normalized;
+
         private ConcurrentDictionary<int, IBubbleNodeController> _viewToControllerMap;
 
         public void Configure(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
@@ -67,24 +72,17 @@ namespace Assets.Code.Bubble
         }
 
         public async UniTask MapNeighbors(IBubbleNodeController strikerNodeController)
-        {
-            var topRightDirection = new Vector2(1, 1).normalized;
-            var rightDirection = new Vector2(1, 0).normalized;
-            var bottomRightDirection = new Vector2(1, -1).normalized;
-            var bottomLeftDirection = new Vector2(-1, -1).normalized;
-            var leftDirection = new Vector2(-1, 0).normalized;
-            var topLeftDirection = new Vector2(-1, 1).normalized;
-
+        { 
             if(strikerNodeController.IsRemoved) return;
 
             var tasks = new List<UniTask<IBubbleNodeController>>
             {
-                MapNeighborAtDirection(strikerNodeController.Position, topRightDirection),
-                MapNeighborAtDirection(strikerNodeController.Position, rightDirection),
-                MapNeighborAtDirection(strikerNodeController.Position, bottomRightDirection),
-                MapNeighborAtDirection(strikerNodeController.Position, bottomLeftDirection),
-                MapNeighborAtDirection(strikerNodeController.Position, leftDirection),
-                MapNeighborAtDirection(strikerNodeController.Position, topLeftDirection)
+                MapNeighborAtDirection(strikerNodeController.Position, _topRightDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, _rightDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, _bottomRightDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, _bottomLeftDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, _leftDirection),
+                MapNeighborAtDirection(strikerNodeController.Position, _topLeftDirection)
             };
 
             await UniTask.WhenAll(tasks);

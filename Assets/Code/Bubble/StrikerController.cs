@@ -31,7 +31,7 @@ namespace Assets.Code.Bubble
                         CollisionObject = other,
                         StrikerNode = _bubbleNodeController,
                     });
-
+                    
                     DestroyComponent();
                 }else if (other.collider.CompareTag(Constants.CeilingTag))
                 {

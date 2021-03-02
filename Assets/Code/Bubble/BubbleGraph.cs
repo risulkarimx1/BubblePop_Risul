@@ -21,12 +21,12 @@ namespace Assets.Code.Bubble
         private readonly NodeIsolationHelper _nodeIsolationHelper;
         private readonly ColorMergeHelper _colorMergeHelper;
 
-        public BubbleGraph(BubbleFactory bubbleFactory, 
-            LevelDataContext levelDataContext, 
+        public BubbleGraph(BubbleFactory bubbleFactory,
+            LevelDataContext levelDataContext,
             SignalBus signalBus,
-            BubbleAttachmentHelper attachmentHelper, 
-            NumericMergeHelper numericMergeHelper, 
-            NodeIsolationHelper nodeIsolationHelper, 
+            BubbleAttachmentHelper attachmentHelper,
+            NumericMergeHelper numericMergeHelper,
+            NodeIsolationHelper nodeIsolationHelper,
             ColorMergeHelper colorMergeHelper)
         {
             _bubbleFactory = bubbleFactory;
@@ -83,12 +83,9 @@ namespace Assets.Code.Bubble
         {
             foreach (var bubbleNodeController in _viewToControllerMap)
             {
-                if (bubbleNodeController.Value.IsRemoved == false)
-                {
-                    bubbleNodeController.Value.ClearNeighbors();
-                    await _attachmentHelper.MapNeighbors(bubbleNodeController.Value);
-                    bubbleNodeController.Value.ShowNeighbor();
-                }
+                bubbleNodeController.Value.ClearNeighbors();
+                await _attachmentHelper.MapNeighbors(bubbleNodeController.Value);
+                bubbleNodeController.Value.ShowNeighbor();
             }
         }
 
@@ -99,27 +96,24 @@ namespace Assets.Code.Bubble
             var strikerNodeController = bubbleCollisionSignal.StrikerNode;
 
             _viewToControllerMap.TryAdd(strikerNodeController.Id, strikerNodeController);
-            _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController, () =>
-            {
-                _ = MapNeighbors(strikerNodeController);
-            });
+            _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController,
+                () => { _ = PerformMergeOnNode(strikerNodeController); });
         }
 
-        private async UniTask MapNeighbors(IBubbleNodeController strikerNodeController)
+        private async UniTask PerformMergeOnNode(IBubbleNodeController strikerNodeController)
         {
             await _attachmentHelper.MapNeighbors(strikerNodeController);
-            var numericallyMergedNodes = await _numericMergeHelper.MergeNodes(strikerNodeController);
-            RemoveNodes(numericallyMergedNodes);
+
+            var mergedNodeByNumber = await _numericMergeHelper.MergeNodes(strikerNodeController);
+            RemoveNodes(mergedNodeByNumber);
+
             await RemapNeighbors();
 
-            var colorMergedNodes = await _colorMergeHelper.MergeNodes(strikerNodeController);
-            if (colorMergedNodes != null)
-            {
-                RemoveNodes(colorMergedNodes);
-            }
-                
-            
+            var mergedNodeByColor = await _colorMergeHelper.MergeNodes(strikerNodeController);
+            if (mergedNodeByColor != null) RemoveNodes(mergedNodeByColor);
+
             var isolatedNodes = _nodeIsolationHelper.GetIsolatedNodes(_viewToControllerMap);
+            
             await DropAndRemoveNodes(isolatedNodes);
             await RemapNeighbors();
         }
@@ -132,6 +126,7 @@ namespace Assets.Code.Bubble
             position.x = (float) Math.Round(position.x, 0);
             node.SetPosition(position, true, 10);
             AddNode(node);
+            _ = PerformMergeOnNode(node);
         }
 
         private void RemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
@@ -139,7 +134,6 @@ namespace Assets.Code.Bubble
             foreach (var node in nodesToRemove)
             {
                 _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
-                Debug.Log($"Removed node: {removedNode}");
                 removedNode?.Remove();
             }
         }

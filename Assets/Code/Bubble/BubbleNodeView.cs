@@ -19,19 +19,19 @@ namespace Assets.Code.Bubble
             
         }
 
-        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null)
+        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
         {
             if (animate)
             {
                 if (callback != null)
                 {
                     DOTween.Sequence()
-                        .Append(_transform.DOMove(position, 1 / speed))
+                        .Append(_transform.DOMove(position, 1 / speed)).SetEase(ease)
                         .AppendCallback(callback);
                 }
                 else
                 {
-                    _transform.DOMove(position, 1 / speed);
+                    _transform.DOMove(position, 1 / speed).SetEase(ease);
                 }
             }
             else

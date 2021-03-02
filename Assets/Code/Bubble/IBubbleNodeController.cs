@@ -16,7 +16,7 @@ namespace Assets.Code.Bubble
         IBubbleNodeController BottomLeft { get; set; }
         IBubbleNodeController Left { get; set; }
         StrikerView ConvertToStriker();
-        void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null);
+        void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear);
         Vector2 Position { get; }
         void SetName(string name);
         void ShowNeighbor();

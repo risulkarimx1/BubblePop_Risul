@@ -40,14 +40,14 @@ namespace Assets.Code.Bubble
         }
 
 
-        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null)
+        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
         {
-            _bubbleNodeView.SetPosition(position, animate, speed, callback);
+            _bubbleNodeView.SetPosition(position, animate, speed, callback, ease);
         }
 
         public bool IsRemoved => _bubbleNodeView.isActiveAndEnabled == false;
 
-        public override string ToString()
+        public virtual string ToString()
         {
             if (_bubbleNodeView == null) return string.Empty;
             return $"{_bubbleNodeView.name}";
@@ -88,8 +88,8 @@ namespace Assets.Code.Bubble
         public void DropNode(TweenCallback callback = null)
         {
             var targetPosition = Position;
-            targetPosition.y = -100;
-            SetPosition(targetPosition, true, 0.1f, callback);
+            targetPosition.y = -20;
+            SetPosition(targetPosition, true, 2, callback, Ease.InQuint);
         }
 
         public void ClearNeighbors()
