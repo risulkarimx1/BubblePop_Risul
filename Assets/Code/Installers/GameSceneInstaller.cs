@@ -10,16 +10,18 @@ namespace Assets.Code.Installers
     [CreateAssetMenu(fileName = "GameSceneInstaller", menuName = "Installers/GameSceneInstaller")]
     public class GameSceneInstaller : ScriptableObjectInstaller<GameSceneInstaller>
     {
+        [SerializeField] private GameObject _mainCamera;
+        
         public override void InstallBindings()
         {
+            // camera
+            Container.Bind<CameraEffects>().FromComponentInNewPrefab(_mainCamera).AsSingle();
+
             // signals
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<BubbleCollisionSignal>();
             Container.DeclareSignal<CeilingCollisionSignal>();
             
-            // camera
-            Container.Bind<Camera>().WithId(Constants.MainCameraId).FromInstance(Camera.main).AsSingle();
-
             // Data Container
             Container.Bind<BubbleDataContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)
                 .AsSingle().NonLazy();

@@ -39,8 +39,6 @@ namespace Assets.Code.Bubble
                             sb.Append(connectedNode);
                             sb.Append(",");
                         }
-
-                        Debug.Log($"Connected to Ceiling: {connectedToCeiling} for [{sb}]");
                     }
                 }
             }

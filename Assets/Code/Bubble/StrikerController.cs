@@ -16,7 +16,7 @@ namespace Assets.Code.Bubble
         public StrikerController(
             BubbleFactory bubbleNodeFactory,
             BubbleDataContainer bubbleDataContainer,
-            Vector2 position, string nodeInfo, SignalBus signalBus)
+            Vector2 position, string nodeInfo, SignalBus signalBus, CameraEffects cameraEffects)
         {
             _bubbleNodeController = bubbleNodeFactory.Create(nodeInfo);
             _strikerView = _bubbleNodeController.ConvertToStriker();
@@ -31,7 +31,7 @@ namespace Assets.Code.Bubble
                         CollisionObject = other,
                         StrikerNode = _bubbleNodeController,
                     });
-                    
+                    cameraEffects.ShowRipple(_bubbleNodeController.Position);
                     DestroyComponent();
                 }else if (other.collider.CompareTag(Constants.CeilingTag))
                 {

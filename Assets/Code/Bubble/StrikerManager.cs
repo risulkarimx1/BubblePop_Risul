@@ -13,16 +13,16 @@ namespace Assets.Code.Bubble
         private StrikerController[] _strikerControllers;
         private readonly StrikerController.Factory _strikerFactory;
         private readonly BubbleDataContainer _bubbleDataContainer;
+        private readonly CameraEffects _cameraEffects;
 
         private int _currentStriker;
         private int _totalStrikers;
 
-        [Inject(Id = Constants.MainCameraId)] private Camera _mainCamera;
-
-        public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer)
+        public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer, CameraEffects cameraEffects)
         {
             _strikerFactory = strikerFactory;
             _bubbleDataContainer = bubbleDataContainer;
+            _cameraEffects = cameraEffects;
         }
 
         public void InitializeStrikers()
@@ -47,8 +47,8 @@ namespace Assets.Code.Bubble
             if (Input.GetMouseButtonDown(0) && _currentStriker < _strikerControllers.Length)
             {
                 var mousePosition = Input.mousePosition;
-                mousePosition.z = Mathf.Abs(0.0f - _mainCamera.transform.position.z);
-                mousePosition = _mainCamera.ScreenToWorldPoint(mousePosition);
+                mousePosition.z = Mathf.Abs(0.0f - _cameraEffects.MainCamera.transform.position.z);
+                mousePosition = _cameraEffects.MainCamera.ScreenToWorldPoint(mousePosition);
                 _strikerControllers[_currentStriker].Strike(mousePosition);
                 _currentStriker++;
                 UpdatePositions();
