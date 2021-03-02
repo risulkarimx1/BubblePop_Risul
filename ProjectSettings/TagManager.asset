@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bubble
   - Ceiling
+  - SideWall
   layers:
   - Default
   - TransparentFX

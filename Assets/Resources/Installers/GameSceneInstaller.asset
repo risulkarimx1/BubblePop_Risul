@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mainCamera: {fileID: 5359187551640862571, guid: f475c9930ad22584087f41e567587f38,
     type: 3}
+  _mouseShootView: {fileID: 948926173552311183, guid: f083080bae1d68148b39a5a5bd0a84b9,
+    type: 3}

@@ -1,5 +1,6 @@
 using Assets.Code.Bubble;
 using Assets.Code.Managers;
+using Assets.Code.ShootEffect;
 using Assets.Code.Signals;
 using Assets.Code.Utils;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Assets.Code.Installers
     public class GameSceneInstaller : ScriptableObjectInstaller<GameSceneInstaller>
     {
         [SerializeField] private GameObject _mainCamera;
+        [SerializeField] private GameObject _mouseShootView;
         
         public override void InstallBindings()
         {
@@ -40,6 +42,9 @@ namespace Assets.Code.Installers
             Container.Bind<BubbleAttachmentHelper>().AsSingle();
             Container.Bind<BubbleGraph>().AsSingle();
 
+            // Mouse Input
+            Container.Bind<MouseShootView>().FromComponentInNewPrefab(_mouseShootView).AsSingle();
+            Container.BindInterfacesAndSelfTo<MouseShootEffect>().AsSingle().NonLazy();
             // Managers
             Container.BindInterfacesAndSelfTo<StrikerManager>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GameSceneManager>().AsSingle();

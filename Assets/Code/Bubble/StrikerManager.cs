@@ -6,10 +6,6 @@ namespace Assets.Code.Bubble
 {
     public class StrikerManager : ITickable
     {
-        
-        private readonly Vector2 _hiddenPosition = new Vector2(8, -12);
-        private readonly Vector2 _firstPosition = new Vector2(2, -12);
-        private readonly Vector2 _secondPosition = new Vector2(4, -12);
         private StrikerController[] _strikerControllers;
         private readonly StrikerController.Factory _strikerFactory;
         private readonly BubbleDataContainer _bubbleDataContainer;
@@ -18,7 +14,8 @@ namespace Assets.Code.Bubble
         private int _currentStriker;
         private int _totalStrikers;
 
-        public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer, CameraEffects cameraEffects)
+        public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer,
+            CameraEffects cameraEffects)
         {
             _strikerFactory = strikerFactory;
             _bubbleDataContainer = bubbleDataContainer;
@@ -32,13 +29,12 @@ namespace Assets.Code.Bubble
             _strikerControllers = new StrikerController[_totalStrikers];
             for (int i = 0; i < strikers.Length; i++)
             {
-                
-                _strikerControllers[i] = _strikerFactory.Create(strikers[i], _hiddenPosition);
+                _strikerControllers[i] = _strikerFactory.Create(strikers[i], Constants.HiddenPosition);
                 _strikerControllers[i].SetName($"Striker- {i}");
             }
 
-            _strikerControllers[0].SetPosition(_firstPosition);
-            _strikerControllers[1].SetPosition(_secondPosition);
+            _strikerControllers[0].SetPosition(Constants.FirstPosition);
+            _strikerControllers[1].SetPosition(Constants.SecondPosition);
             _currentStriker = 0;
         }
 
@@ -46,12 +42,12 @@ namespace Assets.Code.Bubble
         {
             if (Input.GetMouseButtonDown(0) && _currentStriker < _strikerControllers.Length)
             {
-                var mousePosition = Input.mousePosition;
-                mousePosition.z = Mathf.Abs(0.0f - _cameraEffects.MainCamera.transform.position.z);
-                mousePosition = _cameraEffects.MainCamera.ScreenToWorldPoint(mousePosition);
-                _strikerControllers[_currentStriker].Strike(mousePosition);
-                _currentStriker++;
-                UpdatePositions();
+                // var mousePosition = Input.mousePosition;
+                // mousePosition.z = Mathf.Abs(0.0f - _cameraEffects.MainCamera.transform.position.z);
+                // mousePosition = _cameraEffects.MainCamera.ScreenToWorldPoint(mousePosition);
+                // _strikerControllers[_currentStriker].Strike(mousePosition);
+                // _currentStriker++;
+                // UpdatePositions();
             }
         }
 
@@ -61,12 +57,12 @@ namespace Assets.Code.Bubble
             {
                 if (_currentStriker == _totalStrikers - 1)
                 {
-                    _strikerControllers[_currentStriker].SetPosition(_firstPosition);
+                    _strikerControllers[_currentStriker].SetPosition(Constants.FirstPosition);
                 }
                 else
                 {
-                    _strikerControllers[_currentStriker].SetPosition(_firstPosition);
-                    _strikerControllers[_currentStriker + 1].SetPosition(_secondPosition);
+                    _strikerControllers[_currentStriker].SetPosition(Constants.FirstPosition);
+                    _strikerControllers[_currentStriker + 1].SetPosition(Constants.SecondPosition);
                 }
             }
         }
