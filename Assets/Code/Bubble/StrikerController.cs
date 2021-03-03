@@ -33,7 +33,8 @@ namespace Assets.Code.Bubble
                     });
                     cameraEffects.ShowRipple(_bubbleNodeController.Position);
                     DestroyComponent();
-                }else if (other.collider.CompareTag(Constants.CeilingTag))
+                }
+                else if (other.collider.CompareTag(Constants.CeilingTag))
                 {
                     signalBus.Fire(new CeilingCollisionSignal()
                     {
@@ -46,7 +47,7 @@ namespace Assets.Code.Bubble
 
         public void SetName(string name) => _strikerView.SetName(name);
 
-        public void Strike(Vector3 mousePosition) => _strikerView.Strike(mousePosition);
+        public void Strike(Vector2 direction) => _strikerView.Strike(direction);
 
         public void SetPosition(Vector2 position) => _bubbleNodeController.SetPosition(position, true);
 

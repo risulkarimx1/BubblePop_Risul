@@ -1,25 +1,33 @@
-﻿using Assets.Code.Utils;
-using UnityEngine;
+﻿using Assets.Code.Signals;
+using Assets.Code.Utils;
 using Zenject;
 
 namespace Assets.Code.Bubble
 {
-    public class StrikerManager : ITickable
+    public class StrikerManager
     {
         private StrikerController[] _strikerControllers;
         private readonly StrikerController.Factory _strikerFactory;
         private readonly BubbleDataContainer _bubbleDataContainer;
-        private readonly CameraEffects _cameraEffects;
+        private readonly SignalBus _signalBus;
 
         private int _currentStriker;
         private int _totalStrikers;
 
         public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer,
-            CameraEffects cameraEffects)
+            SignalBus signalBus)
         {
             _strikerFactory = strikerFactory;
             _bubbleDataContainer = bubbleDataContainer;
-            _cameraEffects = cameraEffects;
+            _signalBus = signalBus;
+            _signalBus.Subscribe<StrikeSignal>(OnStrike);
+        }
+
+        private void OnStrike(StrikeSignal strikerSignal)
+        {
+            _strikerControllers[_currentStriker].Strike(strikerSignal.Direction);
+            _currentStriker++;
+            UpdatePositions();
         }
 
         public void InitializeStrikers()
@@ -36,19 +44,6 @@ namespace Assets.Code.Bubble
             _strikerControllers[0].SetPosition(Constants.FirstPosition);
             _strikerControllers[1].SetPosition(Constants.SecondPosition);
             _currentStriker = 0;
-        }
-
-        public void Tick()
-        {
-            if (Input.GetMouseButtonDown(0) && _currentStriker < _strikerControllers.Length)
-            {
-                // var mousePosition = Input.mousePosition;
-                // mousePosition.z = Mathf.Abs(0.0f - _cameraEffects.MainCamera.transform.position.z);
-                // mousePosition = _cameraEffects.MainCamera.ScreenToWorldPoint(mousePosition);
-                // _strikerControllers[_currentStriker].Strike(mousePosition);
-                // _currentStriker++;
-                // UpdatePositions();
-            }
         }
 
         public void UpdatePositions()

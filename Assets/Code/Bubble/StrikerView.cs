@@ -33,7 +33,7 @@ namespace Assets.Code.Bubble
         {
             _circleCollider.enabled = true;
             _rigidBody.isKinematic = false;
-            _rigidBody.AddForce((target - (Vector2) transform.position).normalized * 20, ForceMode2D.Impulse);
+            _rigidBody.AddForce(target.normalized * 20, ForceMode2D.Impulse);
         }
 
         public void SetName(string objectName)

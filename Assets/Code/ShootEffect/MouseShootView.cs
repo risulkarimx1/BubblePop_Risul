@@ -6,7 +6,7 @@ namespace Assets.Code.ShootEffect
     {
         private bool _showLine = false;
         private LineRenderer _lineRenderer;
-
+        
         private void Awake()
         {
             _lineRenderer = GetComponent<LineRenderer>();

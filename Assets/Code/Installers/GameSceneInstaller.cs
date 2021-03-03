@@ -23,6 +23,7 @@ namespace Assets.Code.Installers
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<BubbleCollisionSignal>();
             Container.DeclareSignal<CeilingCollisionSignal>();
+            Container.DeclareSignal<StrikeSignal>();
             
             // Data Container
             Container.Bind<BubbleDataContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)
