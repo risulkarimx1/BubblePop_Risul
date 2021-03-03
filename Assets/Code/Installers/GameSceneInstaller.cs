@@ -21,9 +21,13 @@ namespace Assets.Code.Installers
 
             // signals
             SignalBusInstaller.Install(Container);
+            Container.DeclareSignal<GameStateChangeSignal>();
             Container.DeclareSignal<BubbleCollisionSignal>();
             Container.DeclareSignal<CeilingCollisionSignal>();
             Container.DeclareSignal<StrikeSignal>();
+            
+            // Game States
+            Container.Bind<GameStateController>().AsSingle();
             
             // Data Container
             Container.Bind<BubbleDataContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)

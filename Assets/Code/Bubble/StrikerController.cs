@@ -26,6 +26,7 @@ namespace Assets.Code.Bubble
             {
                 if (other.collider.CompareTag(Constants.BubbleTag))
                 {
+                    _strikerView.ResetCollider();
                     signalBus.Fire(new BubbleCollisionSignal()
                     {
                         CollisionObject = other,
@@ -36,12 +37,15 @@ namespace Assets.Code.Bubble
                 }
                 else if (other.collider.CompareTag(Constants.CeilingTag))
                 {
+                    _strikerView.ResetCollider();
                     signalBus.Fire(new CeilingCollisionSignal()
                     {
                         StrikerNode = _bubbleNodeController
                     });
+
                     DestroyComponent();
                 }
+                
             }).AddTo(_strikerView);
         }
 

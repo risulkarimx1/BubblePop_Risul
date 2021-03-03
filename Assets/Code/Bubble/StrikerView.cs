@@ -32,6 +32,7 @@ namespace Assets.Code.Bubble
         public void Strike(Vector2 target)
         {
             _circleCollider.enabled = true;
+            _circleCollider.radius = 0.3f; 
             _rigidBody.isKinematic = false;
             _rigidBody.AddForce(target.normalized * 20, ForceMode2D.Impulse);
         }
@@ -45,6 +46,11 @@ namespace Assets.Code.Bubble
         {
             Destroy(_rigidBody);
             Destroy(this);
+        }
+
+        public void ResetCollider()
+        {
+            _circleCollider.radius = 0.5f;
         }
     }
 }

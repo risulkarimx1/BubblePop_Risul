@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Assets.Code.Managers;
 using Assets.Code.Signals;
 using Assets.Code.Utils;
 using UnityEngine;
@@ -6,7 +8,7 @@ using Zenject;
 
 namespace Assets.Code.ShootEffect
 {
-    public class MouseShootController : ITickable
+    public class MouseShootController : ITickable, IDisposable
     {
         private readonly MouseShootView _mouseShootView;
         private readonly SignalBus _signalBus;
@@ -15,15 +17,26 @@ namespace Assets.Code.ShootEffect
         private List<Vector2> _collisions = new List<Vector2>();
         private Vector2 _shootDirection;
 
+        private bool _isWaitingToShoot;
+        
         public MouseShootController(CameraEffects cameraEffects, MouseShootView mouseShootView, SignalBus signalBus)
         {
             _mouseShootView = mouseShootView;
             _signalBus = signalBus;
             _mainCamera = cameraEffects.MainCamera;
+            _isWaitingToShoot = false;
+            _signalBus.Subscribe<GameStateChangeSignal>(OnGameStateChanged);
+        }
+
+        private void OnGameStateChanged(GameStateChangeSignal gameStateChangeSignal)
+        {
+            _isWaitingToShoot = gameStateChangeSignal.State == GameState.WaitingToShoot;
         }
 
         public void Tick()
         {
+            if(_isWaitingToShoot == false) return;
+            
             // on clicked
             if (Input.GetMouseButton(0))
             {
@@ -109,6 +122,11 @@ namespace Assets.Code.ShootEffect
             {
                 _mouseShootView.SetPosition(i, _collisions[i]);
             }
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

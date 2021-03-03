@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Assets.Code.LevelGeneration;
+using Assets.Code.Managers;
 using Assets.Code.Signals;
 using UniRx.Async;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Assets.Code.Bubble
         private readonly NumericMergeHelper _numericMergeHelper;
         private readonly NodeIsolationHelper _nodeIsolationHelper;
         private readonly ColorMergeHelper _colorMergeHelper;
+        private readonly GameStateController _gameStateController;
 
         public BubbleGraph(BubbleFactory bubbleFactory,
             LevelDataContext levelDataContext,
@@ -27,7 +29,7 @@ namespace Assets.Code.Bubble
             BubbleAttachmentHelper attachmentHelper,
             NumericMergeHelper numericMergeHelper,
             NodeIsolationHelper nodeIsolationHelper,
-            ColorMergeHelper colorMergeHelper)
+            ColorMergeHelper colorMergeHelper, GameStateController gameStateController)
         {
             _bubbleFactory = bubbleFactory;
             _levelDataContext = levelDataContext;
@@ -36,6 +38,7 @@ namespace Assets.Code.Bubble
             _numericMergeHelper = numericMergeHelper;
             _nodeIsolationHelper = nodeIsolationHelper;
             _colorMergeHelper = colorMergeHelper;
+            _gameStateController = gameStateController;
             _viewToControllerMap = new ConcurrentDictionary<int, IBubbleNodeController>();
             _attachmentHelper.Configure(_viewToControllerMap);
             _signalBus.Subscribe<BubbleCollisionSignal>(OnBubbleCollided);
@@ -44,6 +47,7 @@ namespace Assets.Code.Bubble
 
         public async UniTask Initialize()
         {
+            _gameStateController.CurrentSate = GameState.Loading;
             string levelData = _levelDataContext.GetSelectedLevelData();
             var lines = levelData.Split('\n');
             Vector2 pos = Vector2.zero;
@@ -77,6 +81,7 @@ namespace Assets.Code.Bubble
             }
 
             await RemapNeighbors();
+            _gameStateController.CurrentSate = GameState.WaitingToShoot;
         }
 
         private async UniTask RemapNeighbors()
@@ -91,16 +96,19 @@ namespace Assets.Code.Bubble
 
         private void OnBubbleCollided(BubbleCollisionSignal bubbleCollisionSignal)
         {
+            _gameStateController.CurrentSate = GameState.Loading;
             var collision = bubbleCollisionSignal.CollisionObject;
             var colliderNodeController = _viewToControllerMap[collision.gameObject.GetInstanceID()];
             var strikerNodeController = bubbleCollisionSignal.StrikerNode;
 
             _viewToControllerMap.TryAdd(strikerNodeController.Id, strikerNodeController);
-            _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController,
-                () => { _ = PerformMergeOnNode(strikerNodeController); });
+            _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController, () =>
+            {
+                _ = PerformMergeOnNodeAsync(strikerNodeController);
+            });
         }
 
-        private async UniTask PerformMergeOnNode(IBubbleNodeController strikerNodeController)
+        private async UniTask PerformMergeOnNodeAsync(IBubbleNodeController strikerNodeController)
         {
             await _attachmentHelper.MapNeighbors(strikerNodeController);
 
@@ -116,17 +124,19 @@ namespace Assets.Code.Bubble
             
             await DropAndRemoveNodes(isolatedNodes);
             await RemapNeighbors();
+            _gameStateController.CurrentSate = GameState.WaitingToShoot;
         }
 
         private void OnCeilingCollision(CeilingCollisionSignal ceilingCollisionSignal)
         {
+            _gameStateController.CurrentSate = GameState.Loading;
             var node = ceilingCollisionSignal.StrikerNode;
             var position = node.Position;
             position.y = 0;
             position.x = (float) Math.Round(position.x, 0);
             node.SetPosition(position, true, 10);
             AddNode(node);
-            _ = PerformMergeOnNode(node);
+            _ = PerformMergeOnNodeAsync(node);
         }
 
         private void RemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
@@ -140,14 +150,22 @@ namespace Assets.Code.Bubble
 
         private async UniTask DropAndRemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
         {
+            var hasNodesToRemove = false;
             foreach (var node in nodesToRemove)
             {
                 node.DropNode(() =>
                 {
+                    hasNodesToRemove = true;
                     _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
                     removedNode?.Remove();
                 });
                 await UniTask.Yield();
+            }
+
+            if (hasNodesToRemove)
+            {
+                GC.Collect();
+                await UniTask.Delay(1000);
             }
         }
 

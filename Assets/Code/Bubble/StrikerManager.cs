@@ -1,4 +1,5 @@
-﻿using Assets.Code.Signals;
+﻿using Assets.Code.Managers;
+using Assets.Code.Signals;
 using Assets.Code.Utils;
 using Zenject;
 
@@ -10,24 +11,32 @@ namespace Assets.Code.Bubble
         private readonly StrikerController.Factory _strikerFactory;
         private readonly BubbleDataContainer _bubbleDataContainer;
         private readonly SignalBus _signalBus;
+        private readonly GameStateController _gameStateController;
 
         private int _currentStriker;
         private int _totalStrikers;
 
         public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer,
-            SignalBus signalBus)
+            SignalBus signalBus, GameStateController gameStateController)
         {
             _strikerFactory = strikerFactory;
             _bubbleDataContainer = bubbleDataContainer;
             _signalBus = signalBus;
+            _gameStateController = gameStateController;
             _signalBus.Subscribe<StrikeSignal>(OnStrike);
         }
 
         private void OnStrike(StrikeSignal strikerSignal)
         {
-            _strikerControllers[_currentStriker].Strike(strikerSignal.Direction);
-            _currentStriker++;
-            UpdatePositions();
+            if (_gameStateController.CurrentSate == GameState.WaitingToShoot)
+            {
+                if(_currentStriker >= _totalStrikers) return;
+                
+                _gameStateController.CurrentSate = GameState.Shooting;
+                _strikerControllers[_currentStriker].Strike(strikerSignal.Direction);
+                _currentStriker++;
+                UpdatePositions();
+            }
         }
 
         public void InitializeStrikers()
