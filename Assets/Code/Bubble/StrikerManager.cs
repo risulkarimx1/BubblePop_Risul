@@ -36,6 +36,7 @@ namespace Assets.Code.Bubble
                 _strikerControllers[_currentStriker].Strike(strikerSignal.Direction);
                 _currentStriker++;
                 UpdatePositions();
+                if(_currentStriker == _totalStrikers) _signalBus.Fire<StrikerFinishedSignal>();
             }
         }
 

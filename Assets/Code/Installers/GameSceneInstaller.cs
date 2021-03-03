@@ -13,7 +13,7 @@ namespace Assets.Code.Installers
     {
         [SerializeField] private GameObject _mainCamera;
         [SerializeField] private GameObject _mouseShootView;
-        
+
         public override void InstallBindings()
         {
             // camera
@@ -24,11 +24,12 @@ namespace Assets.Code.Installers
             Container.DeclareSignal<GameStateChangeSignal>();
             Container.DeclareSignal<BubbleCollisionSignal>();
             Container.DeclareSignal<CeilingCollisionSignal>();
+            Container.DeclareSignal<StrikerFinishedSignal>();
             Container.DeclareSignal<StrikeSignal>();
-            
+
             // Game States
             Container.Bind<GameStateController>().AsSingle();
-            
+
             // Data Container
             Container.Bind<BubbleDataContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)
                 .AsSingle().NonLazy();

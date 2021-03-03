@@ -67,13 +67,12 @@ namespace Assets.Code.Bubble
                 position.y--;
             }
 
-            strikerNodeController.SetPosition(position, true,10, callback);
-            
+            strikerNodeController.SetPosition(position, true, 10, callback);
         }
 
         public async UniTask MapNeighbors(IBubbleNodeController strikerNodeController)
-        { 
-            if(strikerNodeController.IsRemoved) return;
+        {
+            if (strikerNodeController.IsRemoved) return;
 
             var tasks = new List<UniTask<IBubbleNodeController>>
             {
@@ -103,6 +102,7 @@ namespace Assets.Code.Bubble
                 Debug.DrawRay(origin, direction, Color.red);
                 return _viewToControllerMap[hit.collider.gameObject.GetInstanceID()];
             }
+
             return null;
         }
     }

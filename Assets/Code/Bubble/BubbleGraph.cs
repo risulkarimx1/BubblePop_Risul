@@ -23,6 +23,8 @@ namespace Assets.Code.Bubble
         private readonly ColorMergeHelper _colorMergeHelper;
         private readonly GameStateController _gameStateController;
 
+        private bool _isStrikerFinished = false;
+
         public BubbleGraph(BubbleFactory bubbleFactory,
             LevelDataContext levelDataContext,
             SignalBus signalBus,
@@ -43,9 +45,15 @@ namespace Assets.Code.Bubble
             _attachmentHelper.Configure(_viewToControllerMap);
             _signalBus.Subscribe<BubbleCollisionSignal>(OnBubbleCollided);
             _signalBus.Subscribe<CeilingCollisionSignal>(OnCeilingCollision);
+            _signalBus.Subscribe<StrikerFinishedSignal>(OnStrikerFinsihed);
         }
 
-        public async UniTask Initialize()
+        private void OnStrikerFinsihed()
+        {
+            _isStrikerFinished = true;
+        }
+
+        public async UniTask InitializeAsync()
         {
             _gameStateController.CurrentSate = GameState.Loading;
             string levelData = _levelDataContext.GetSelectedLevelData();
@@ -80,11 +88,11 @@ namespace Assets.Code.Bubble
                 pos.y--;
             }
 
-            await RemapNeighbors();
+            await RemapNeighborsAsync();
             _gameStateController.CurrentSate = GameState.WaitingToShoot;
         }
 
-        private async UniTask RemapNeighbors()
+        private async UniTask RemapNeighborsAsync()
         {
             foreach (var bubbleNodeController in _viewToControllerMap)
             {
@@ -115,7 +123,7 @@ namespace Assets.Code.Bubble
             var mergedNodeByNumber = await _numericMergeHelper.MergeNodes(strikerNodeController);
             RemoveNodes(mergedNodeByNumber);
 
-            await RemapNeighbors();
+            await RemapNeighborsAsync();
 
             var mergedNodeByColor = await _colorMergeHelper.MergeNodes(strikerNodeController);
             if (mergedNodeByColor != null) RemoveNodes(mergedNodeByColor);
@@ -123,8 +131,24 @@ namespace Assets.Code.Bubble
             var isolatedNodes = _nodeIsolationHelper.GetIsolatedNodes(_viewToControllerMap);
             
             await DropAndRemoveNodes(isolatedNodes);
-            await RemapNeighbors();
-            _gameStateController.CurrentSate = GameState.WaitingToShoot;
+            await RemapNeighborsAsync();
+            
+            Debug.Log($"_nodes left: {_viewToControllerMap.Count}");
+
+            if (_viewToControllerMap.IsEmpty)
+            {
+                
+                _gameStateController.CurrentSate = GameState.GameOverWin;
+            }
+            
+            else if (_isStrikerFinished)
+            {
+                _gameStateController.CurrentSate = GameState.GameOverLose;
+            }
+            else
+            {
+                _gameStateController.CurrentSate = GameState.WaitingToShoot;
+            }
         }
 
         private void OnCeilingCollision(CeilingCollisionSignal ceilingCollisionSignal)
@@ -178,6 +202,7 @@ namespace Assets.Code.Bubble
         {
             _signalBus.Unsubscribe<BubbleCollisionSignal>(OnBubbleCollided);
             _signalBus.Unsubscribe<CeilingCollisionSignal>(OnCeilingCollision);
+            _signalBus.Unsubscribe<StrikerFinishedSignal>(OnStrikerFinsihed);
         }
     }
 }

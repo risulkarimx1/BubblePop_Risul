@@ -10,6 +10,7 @@ namespace Assets.Code.Bubble
         private Transform _transform;
         public IObservable<Collision2D> CollisionEnter2D { get; private set; }
         private CircleCollider2D _circleCollider;
+
         private void Awake()
         {
             _transform = transform;
@@ -32,7 +33,7 @@ namespace Assets.Code.Bubble
         public void Strike(Vector2 target)
         {
             _circleCollider.enabled = true;
-            _circleCollider.radius = 0.3f; 
+            _circleCollider.radius = 0.3f;
             _rigidBody.isKinematic = false;
             _rigidBody.AddForce(target.normalized * 20, ForceMode2D.Impulse);
         }

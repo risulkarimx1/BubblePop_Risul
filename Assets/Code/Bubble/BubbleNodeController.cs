@@ -47,7 +47,7 @@ namespace Assets.Code.Bubble
 
         public bool IsRemoved => _bubbleNodeView.isActiveAndEnabled == false;
 
-        public virtual string ToString()
+        public override string ToString()
         {
             if (_bubbleNodeView == null) return string.Empty;
             return $"{_bubbleNodeView.name}";
