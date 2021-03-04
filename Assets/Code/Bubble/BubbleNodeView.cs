@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
+using UniRx.Async;
 using UnityEngine;
 
 namespace Assets.Code.Bubble

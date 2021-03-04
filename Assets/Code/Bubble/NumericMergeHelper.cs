@@ -78,7 +78,6 @@ namespace Assets.Code.Bubble
             }
 
             nodesToRemove.Add(source);
-            source.HideNode();
             await UniTask.Delay(10);
 
             return nodesToRemove;

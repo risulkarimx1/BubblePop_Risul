@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Assets.Code.LevelGeneration;
 using Assets.Code.Managers;
@@ -15,7 +14,7 @@ namespace Assets.Code.Bubble
         private readonly BubbleFactory _bubbleFactory;
         private readonly LevelDataContext _levelDataContext;
         private readonly SignalBus _signalBus;
-        private ConcurrentDictionary<int, IBubbleNodeController> _viewToControllerMap;
+        private Dictionary<int, IBubbleNodeController> _viewToControllerMap;
 
         private BubbleAttachmentHelper _attachmentHelper;
         private readonly NumericMergeHelper _numericMergeHelper;
@@ -41,14 +40,14 @@ namespace Assets.Code.Bubble
             _nodeIsolationHelper = nodeIsolationHelper;
             _colorMergeHelper = colorMergeHelper;
             _gameStateController = gameStateController;
-            _viewToControllerMap = new ConcurrentDictionary<int, IBubbleNodeController>();
+            _viewToControllerMap = new Dictionary<int, IBubbleNodeController>();
             _attachmentHelper.Configure(_viewToControllerMap);
             _signalBus.Subscribe<BubbleCollisionSignal>(OnBubbleCollided);
             _signalBus.Subscribe<CeilingCollisionSignal>(OnCeilingCollision);
-            _signalBus.Subscribe<StrikerFinishedSignal>(OnStrikerFinsihed);
+            _signalBus.Subscribe<StrikerFinishedSignal>(OnStrikerFinished);
         }
 
-        private void OnStrikerFinsihed()
+        private void OnStrikerFinished()
         {
             _isStrikerFinished = true;
         }
@@ -109,7 +108,7 @@ namespace Assets.Code.Bubble
             var colliderNodeController = _viewToControllerMap[collision.gameObject.GetInstanceID()];
             var strikerNodeController = bubbleCollisionSignal.StrikerNode;
 
-            _viewToControllerMap.TryAdd(strikerNodeController.Id, strikerNodeController);
+            _viewToControllerMap.Add(strikerNodeController.Id, strikerNodeController);
             _attachmentHelper.PlaceInGraph(collision, colliderNodeController, strikerNodeController, () =>
             {
                 _ = PerformMergeOnNodeAsync(strikerNodeController);
@@ -118,28 +117,42 @@ namespace Assets.Code.Bubble
 
         private async UniTask PerformMergeOnNodeAsync(IBubbleNodeController strikerNodeController)
         {
+            // map striker to its neighbour
             await _attachmentHelper.MapNeighbors(strikerNodeController);
 
+            // Numeric merge
             var mergedNodeByNumber = await _numericMergeHelper.MergeNodes(strikerNodeController);
-            RemoveNodes(mergedNodeByNumber);
+            RemoveNodes(mergedNodeByNumber, "by number");
 
+            // Map neighbor after numeric merge
             await RemapNeighborsAsync();
 
+            // Merge by color and 3 nodes
             var mergedNodeByColor = await _colorMergeHelper.MergeNodes(strikerNodeController);
-            if (mergedNodeByColor != null) RemoveNodes(mergedNodeByColor);
+            if (mergedNodeByColor != null)
+            {
+                RemoveNodes(mergedNodeByColor, "by color");
+                await RemapNeighborsAsync();
+            }
 
+            // Find and remove isolated nodes
             var isolatedNodes = _nodeIsolationHelper.GetIsolatedNodes(_viewToControllerMap);
             
             await DropAndRemoveNodes(isolatedNodes);
             await RemapNeighborsAsync();
 
-            Debug.Log($"nodes left: {_viewToControllerMap.Count}");
+            await CheckGameOverCondition();
+        }
 
-            if (_viewToControllerMap.IsEmpty)
+        private async UniTask CheckGameOverCondition()
+        {
+            await UniTask.DelayFrame(1);
+            Debug.Log($"nodes left after: {_viewToControllerMap.Count}");
+            if (_viewToControllerMap.Count == 0)
             {
                 _gameStateController.CurrentSate = GameState.GameOverWin;
             }
-            
+
             else if (_isStrikerFinished)
             {
                 _gameStateController.CurrentSate = GameState.GameOverLose;
@@ -162,16 +175,11 @@ namespace Assets.Code.Bubble
             _ = PerformMergeOnNodeAsync(node);
         }
 
-        private void RemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
+        private void RemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove, string type)
         {
             foreach (var node in nodesToRemove)
             {
-                _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
-                if (removedNode != null)
-                {
-                    _signalBus.Fire(new ScoreUpdateSignal() { Score = removedNode.NodeValue });
-                    removedNode.Remove();
-                }
+                RemoveNode(node,type);
             }
         }
 
@@ -181,13 +189,11 @@ namespace Assets.Code.Bubble
             foreach (var node in nodesToRemove)
             {
                 node.DropNode(() =>
-                {
+                {   
+                    RemoveNode(node,"drop", true);
                     hasNodesToRemove = true;
-                    _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
-                    removedNode.ExplodeNode();
-                    removedNode?.Remove();
                 });
-                await UniTask.Yield();
+                await UniTask.DelayFrame(1);
             }
 
             if (hasNodesToRemove)
@@ -199,14 +205,26 @@ namespace Assets.Code.Bubble
 
         public void AddNode(IBubbleNodeController bubbleController)
         {
-            _viewToControllerMap.TryAdd(bubbleController.Id, bubbleController);
+            _viewToControllerMap.Add(bubbleController.Id, bubbleController);
+        }
+
+        public void RemoveNode(IBubbleNodeController node,string type, bool explode = false)
+        {
+            _viewToControllerMap.Remove(node.Id);
+            Debug.Log($"Removing {node} of type {type}");
+            _signalBus.Fire(new ScoreUpdateSignal() { Score = node.NodeValue });
+            if (explode)
+            {
+                node.ExplodeNode();
+            }
+            node.Remove();
         }
 
         public void Dispose()
         {
             _signalBus.Unsubscribe<BubbleCollisionSignal>(OnBubbleCollided);
             _signalBus.Unsubscribe<CeilingCollisionSignal>(OnCeilingCollision);
-            _signalBus.Unsubscribe<StrikerFinishedSignal>(OnStrikerFinsihed);
+            _signalBus.Unsubscribe<StrikerFinishedSignal>(OnStrikerFinished);
         }
     }
 }

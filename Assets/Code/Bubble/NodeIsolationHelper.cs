@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
@@ -11,7 +9,7 @@ namespace Assets.Code.Bubble
     {
         private float _ceilingY = 0;
 
-        public List<IBubbleNodeController> GetIsolatedNodes(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
+        public List<IBubbleNodeController> GetIsolatedNodes(Dictionary<int, IBubbleNodeController> viewToControllerMap)
         {
             var objectsToRemove = new List<IBubbleNodeController>();
             var visitedNodes = new Dictionary<IBubbleNodeController, bool>();

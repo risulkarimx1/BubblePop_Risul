@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Assets.Code.Utils;
 using DG.Tweening;
 using UniRx.Async;
@@ -16,9 +15,9 @@ namespace Assets.Code.Bubble
         private readonly Vector2 _leftDirection = new Vector2(-1, 0).normalized;
         private readonly Vector2 _topLeftDirection = new Vector2(-1, 1).normalized;
 
-        private ConcurrentDictionary<int, IBubbleNodeController> _viewToControllerMap;
+        private Dictionary <int, IBubbleNodeController> _viewToControllerMap;
 
-        public void Configure(ConcurrentDictionary<int, IBubbleNodeController> viewToControllerMap)
+        public void Configure(Dictionary<int, IBubbleNodeController> viewToControllerMap)
         {
             _viewToControllerMap = viewToControllerMap;
         }
