@@ -98,7 +98,7 @@ namespace Assets.Code.Bubble
             {
                 explosion.Dispose();;
             });
-            await UniTask.Delay(60);// duration of explosion animation
+            await UniTask.Delay(60);// duration of explosion animation: TODO Make it read from the animation
             HideNode(callback);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Assets.Code.Utils;
 using UniRx;
 using UniRx.Async;
 
@@ -7,12 +8,13 @@ namespace Assets.Code.Bubble
 {
     public class NumericMergeHelper
     {
-        private bool IsValidNode(IBubbleNodeController n, IBubbleNodeController source, HashSet<IBubbleNodeController> visitedNodes)
+        private bool IsValidNode(IBubbleNodeController n, IBubbleNodeController source,
+            HashSet<IBubbleNodeController> visitedNodes)
         {
             return n != null && n.NodeValue == source.NodeValue && visitedNodes.Contains(n) == false;
         }
 
-        public async UniTask<HashSet<IBubbleNodeController>> MergeNodes(IBubbleNodeController source)
+        public async UniTask<HashSet<IBubbleNodeController>> MergeNodesAsync(IBubbleNodeController source)
         {
             var visitedNodes = BubbleUtility.Dfs(source, IsValidNode);
 
@@ -25,7 +27,7 @@ namespace Assets.Code.Bubble
                 nodesToRemove.Add(elements[i]);
             }
 
-            var willExplode = await PerformNumericMerge(elements);
+            var willExplode = await PerformNumericMergeAsync(elements);
 
             if (!willExplode) return nodesToRemove;
 
@@ -40,7 +42,7 @@ namespace Assets.Code.Bubble
             return nodesToRemove;
         }
 
-        private async UniTask<bool> PerformNumericMerge(IBubbleNodeController[] elements)
+        private async UniTask<bool> PerformNumericMergeAsync(IBubbleNodeController[] elements)
         {
             var willExplode = false;
             var index = elements.Length - 1;
@@ -48,22 +50,22 @@ namespace Assets.Code.Bubble
             {
                 var current = elements[index];
                 var upperNode = elements[index - 1];
-                await UniTask.SwitchToMainThread();// brings to main thread
-                await current.SetPositionAsync(upperNode.Position, true, 10,// leaves main thread
+                await UniTask.SwitchToMainThread(); // brings to main thread
+                await current.SetPositionAsync(upperNode.Position, true, 10, // leaves main thread
                     () =>
                     {
                         upperNode.NodeValue = upperNode.NodeValue * current.NodeValue;
-                        if (upperNode.NodeValue > 2048)
+                        if (upperNode.NodeValue > Constants.MaxBubbleValue)
                         {
-                            upperNode.NodeValue = 2048;
+                            upperNode.NodeValue = Constants.MaxBubbleValue;
                             willExplode = true;
                         }
                     });
-                
+
                 current.HideNode();
                 index--;
             }
-            
+
             // Coming back to main thread again
             await UniTask.SwitchToMainThread();
             return willExplode;
@@ -73,15 +75,12 @@ namespace Assets.Code.Bubble
         {
             var nodesToRemove = new List<IBubbleNodeController>();
             var neighbors = source.GetNeighbors().Where(n => n != null);
+            nodesToRemove.Add(source);
             foreach (var bubbleNodeController in neighbors)
             {
                 nodesToRemove.Add(bubbleNodeController);
                 await bubbleNodeController.ExplodeNodeAsync();
-                await UniTask.Delay(10);
             }
-
-            nodesToRemove.Add(source);
-            await UniTask.Delay(10);
 
             return nodesToRemove;
         }

@@ -13,7 +13,6 @@ namespace Assets.Code.Managers
         private readonly StrikerManager _strikerManager;
         private readonly SignalBus _signalBus;
 
-        private bool _isStrikerFinished = false;
         public GameSceneManager(BubbleGraph bubbleGraph, StrikerManager strikerManager, SignalBus signalBus)
         {
             _bubbleGraph = bubbleGraph;

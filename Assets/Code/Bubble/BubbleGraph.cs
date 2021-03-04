@@ -121,7 +121,7 @@ namespace Assets.Code.Bubble
             await _attachmentHelper.MapNeighbors(strikerNodeController);
 
             // Numeric merge
-            var mergedNodeByNumber = await _numericMergeHelper.MergeNodes(strikerNodeController);
+            var mergedNodeByNumber = await _numericMergeHelper.MergeNodesAsync(strikerNodeController);
             await RemoveNodesAsync(mergedNodeByNumber, "by number");
 
             // Map neighbor after numeric merge
