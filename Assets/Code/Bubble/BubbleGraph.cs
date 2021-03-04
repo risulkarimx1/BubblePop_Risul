@@ -170,9 +170,11 @@ namespace Assets.Code.Bubble
             var position = node.Position;
             position.y = 0;
             position.x = (float) Math.Round(position.x, 0);
-            node.SetPosition(position, true, 10);
             AddNode(node);
-            _ = PerformMergeOnNodeAsync(node);
+            node.SetPosition(position, true, 10, ()=>
+            {
+                _ = PerformMergeOnNodeAsync(node);
+            });
         }
 
         private async UniTask RemoveNodesAsync(IEnumerable<IBubbleNodeController> nodesToRemove, string type)
@@ -195,13 +197,13 @@ namespace Assets.Code.Bubble
                     hasNodesToRemove = true;
                 });
                 dropTasks.Add(t);
-                //await UniTask.DelayFrame(1);
             }
 
             await UniTask.WhenAll(dropTasks);
             
             if (hasNodesToRemove)
             {
+                // make GC happy
                 GC.Collect();
                 await UniTask.Delay(1000);
             }

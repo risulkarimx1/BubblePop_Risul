@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UniRx.Async;
-using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
@@ -34,7 +32,7 @@ namespace Assets.Code.Bubble
             foreach (var bubbleNodeController in elements)
             {
                 await bubbleNodeController.ExplodeNodeAsync();
-                await UniTask.Delay(100);
+                //await UniTask.Delay(100);
             }
         }
     }
