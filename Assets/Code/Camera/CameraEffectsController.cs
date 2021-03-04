@@ -1,8 +1,8 @@
-﻿using System;
+﻿using DG.Tweening;
 using UniRx.Async;
 using UnityEngine;
 
-public class CameraEffects : MonoBehaviour
+public class CameraEffectsController : MonoBehaviour
 {
     private Camera _camera;
     
@@ -17,11 +17,18 @@ public class CameraEffects : MonoBehaviour
     private static readonly int _centerY = Shader.PropertyToID("_CenterY");
     private static readonly int _amountProperty = Shader.PropertyToID("_Amount");
 
+    private Transform _transform;
+    private readonly Vector3 _shakePosition = (Vector3.one - Vector3.back);
+    private Vector3 _defaultPosition;
+    
     public Camera MainCamera => _camera;
-
+    private bool _isShaking = false;
+    
     private void Awake()
     {
         _camera = GetComponent<Camera>();
+        _transform = GetComponent<Transform>();
+        _defaultPosition = _transform.position;
     }
 
     public void ShowRipple(Vector2 position)
@@ -29,6 +36,17 @@ public class CameraEffects : MonoBehaviour
         _ = Ripple(position);
     }
 
+    public void ShakeCamera()
+    {
+        if(_isShaking) return;
+        
+        _isShaking = true;
+        DOTween.Sequence()
+            .Append(_transform.DOShakePosition(1f, _shakePosition))
+            .Append(_transform.DOMove(_defaultPosition, 0.25f))
+            .AppendCallback(()=> _isShaking = false);
+    }
+    
     private async UniTask Ripple(Vector2 pos)
     {
         _amount = _maxAmount;

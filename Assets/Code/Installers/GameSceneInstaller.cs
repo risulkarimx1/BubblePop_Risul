@@ -20,7 +20,7 @@ namespace Assets.Code.Installers
         public override void InstallBindings()
         {
             // camera
-            Container.Bind<CameraEffects>().FromComponentInNewPrefab(_mainCamera).AsSingle();
+            Container.Bind<CameraEffectsController>().FromComponentInNewPrefab(_mainCamera).AsSingle();
 
             // signals
             SignalBusInstaller.Install(Container);

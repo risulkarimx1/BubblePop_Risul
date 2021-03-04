@@ -20,12 +20,12 @@ namespace Assets.Code.ShootEffect
 
         private bool _isWaitingToShoot;
         
-        public MouseShootController(CameraEffects cameraEffects, MouseShootView mouseShootView, SignalBus signalBus, GameStateController gameStateController)
+        public MouseShootController(CameraEffectsController cameraEffectsController, MouseShootView mouseShootView, SignalBus signalBus, GameStateController gameStateController)
         {
             _mouseShootView = mouseShootView;
             _signalBus = signalBus;
             _gameStateController = gameStateController;
-            _mainCamera = cameraEffects.MainCamera;
+            _mainCamera = cameraEffectsController.MainCamera;
             _isWaitingToShoot = false;
             _signalBus.Subscribe<GameStateChangeSignal>(OnGameStateChanged);
         }

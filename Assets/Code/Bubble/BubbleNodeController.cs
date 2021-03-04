@@ -10,6 +10,7 @@ namespace Assets.Code.Bubble
         private readonly BubbleNodeModel _bubbleNodeModel;
         private readonly BubbleNodeView _bubbleNodeView;
         private readonly ExplosionController.Factory _explosionFactory;
+        private readonly CameraEffectsController _cameraEffectsController;
 
         public IBubbleNodeController TopRight { get; set; }
         public IBubbleNodeController Right { get; set; }
@@ -32,11 +33,16 @@ namespace Assets.Code.Bubble
         }
 
 
-        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView, ExplosionController.Factory explosionFactory)
+        public BubbleNodeController(
+            BubbleNodeModel bubbleNodeModel, 
+            BubbleNodeView bubbleNodeView, 
+            ExplosionController.Factory explosionFactory,
+            CameraEffectsController cameraEffectsController)
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
             _explosionFactory = explosionFactory;
+            _cameraEffectsController = cameraEffectsController;
             _bubbleNodeModel.NodeValue.Subscribe(val => { _bubbleNodeView.ValueText.text = val.ToString(); })
                 .AddTo(_bubbleNodeView);
         }
@@ -81,6 +87,7 @@ namespace Assets.Code.Bubble
             DOTween.Sequence().AppendCallback(() =>
             {
                  explosion = _explosionFactory.Create(Position);
+                 _cameraEffectsController.ShakeCamera();
             }).AppendCallback(() =>
             {
                 explosion.Dispose();;
