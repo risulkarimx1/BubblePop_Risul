@@ -87,7 +87,7 @@ namespace Assets.Code.Bubble
             _bubbleNodeView.AnimateHide(callback);
         }
 
-        public void ExplodeNode(TweenCallback callback = null)
+        public async  UniTask ExplodeNodeAsync(TweenCallback callback = null)
         {
             ExplosionController explosion = null;
             DOTween.Sequence().AppendCallback(() =>
@@ -98,7 +98,7 @@ namespace Assets.Code.Bubble
             {
                 explosion.Dispose();;
             });
-            
+            await UniTask.Delay(60);// duration of explosion animation
             HideNode(callback);
         }
 

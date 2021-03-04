@@ -71,6 +71,7 @@ namespace Assets.Code.Bubble
 
         public async UniTask MapNeighbors(IBubbleNodeController strikerNodeController)
         {
+            await UniTask.SwitchToMainThread();
             if (strikerNodeController.IsRemoved) return;
 
             var tasks = new List<UniTask<IBubbleNodeController>>

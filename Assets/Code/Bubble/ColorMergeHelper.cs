@@ -33,7 +33,7 @@ namespace Assets.Code.Bubble
         {
             foreach (var bubbleNodeController in elements)
             {
-                bubbleNodeController.ExplodeNode();
+                await bubbleNodeController.ExplodeNodeAsync();
                 await UniTask.Delay(100);
             }
         }

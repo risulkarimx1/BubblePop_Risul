@@ -122,7 +122,7 @@ namespace Assets.Code.Bubble
 
             // Numeric merge
             var mergedNodeByNumber = await _numericMergeHelper.MergeNodes(strikerNodeController);
-            RemoveNodes(mergedNodeByNumber, "by number");
+            await RemoveNodesAsync(mergedNodeByNumber, "by number");
 
             // Map neighbor after numeric merge
             await RemapNeighborsAsync();
@@ -131,7 +131,7 @@ namespace Assets.Code.Bubble
             var mergedNodeByColor = await _colorMergeHelper.MergeNodes(strikerNodeController);
             if (mergedNodeByColor != null)
             {
-                RemoveNodes(mergedNodeByColor, "by color");
+                await RemoveNodesAsync(mergedNodeByColor, "by color");
                 await RemapNeighborsAsync();
             }
 
@@ -175,11 +175,11 @@ namespace Assets.Code.Bubble
             _ = PerformMergeOnNodeAsync(node);
         }
 
-        private void RemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove, string type)
+        private async UniTask RemoveNodesAsync(IEnumerable<IBubbleNodeController> nodesToRemove, string type)
         {
             foreach (var node in nodesToRemove)
             {
-                RemoveNode(node,type);
+                await RemoveNodeAsync(node,type);
             }
         }
 
@@ -189,9 +189,9 @@ namespace Assets.Code.Bubble
             var dropTasks = new List<UniTask>();
             foreach (var node in nodesToRemove)
             {
-                var t = node.DropNodeAsync(() =>
+                var t = node.DropNodeAsync(async () =>
                 {   
-                    RemoveNode(node,"drop", true);
+                    await RemoveNodeAsync(node,"drop", true);
                     hasNodesToRemove = true;
                 });
                 dropTasks.Add(t);
@@ -212,14 +212,14 @@ namespace Assets.Code.Bubble
             _viewToControllerMap.Add(bubbleController.Id, bubbleController);
         }
 
-        public void RemoveNode(IBubbleNodeController node,string type, bool explode = false)
+        public async UniTask RemoveNodeAsync(IBubbleNodeController node,string type, bool explode = false)
         {
             _viewToControllerMap.Remove(node.Id);
             Debug.Log($"Removing {node} of type {type}");
             _signalBus.Fire(new ScoreUpdateSignal() { Score = node.NodeValue });
             if (explode)
             {
-                node.ExplodeNode();
+                await node.ExplodeNodeAsync();
             }
             node.Remove();
         }

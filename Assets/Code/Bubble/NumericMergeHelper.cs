@@ -76,7 +76,7 @@ namespace Assets.Code.Bubble
             foreach (var bubbleNodeController in neighbors)
             {
                 nodesToRemove.Add(bubbleNodeController);
-                bubbleNodeController.ExplodeNode();
+                await bubbleNodeController.ExplodeNodeAsync();
                 await UniTask.Delay(10);
             }
 
