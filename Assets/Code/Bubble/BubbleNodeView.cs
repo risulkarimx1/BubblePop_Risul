@@ -21,6 +21,28 @@ namespace Assets.Code.Bubble
 
         }
 
+        public async UniTask SetPositionAsync(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
+        {
+            if (animate)
+            {
+                if (callback != null)
+                {
+                    await DOTween.Sequence()
+                        .Append(_transform.DOMove(position, 1 / speed)).SetEase(ease)
+                        .AppendCallback(callback).AsyncWaitForCompletion().ConfigureAwait(false);
+                }
+                else
+                {
+                    await _transform.DOMove(position, 1 / speed).SetEase(ease).AsyncWaitForCompletion().ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                _transform.position = position;
+            }
+            
+        }
+        
         public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
         {
             if (animate)

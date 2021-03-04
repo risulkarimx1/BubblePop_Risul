@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
 using UniRx;
+using UniRx.Async;
 using UnityEngine;
 
 namespace Assets.Code.Bubble
@@ -53,6 +54,11 @@ namespace Assets.Code.Bubble
             _bubbleNodeView.SetPosition(position, animate, speed, callback, ease);
         }
 
+        public async UniTask SetPositionAsync(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
+        {
+            await _bubbleNodeView.SetPositionAsync(position, animate, speed, callback, ease);
+        }
+        
         public bool IsRemoved => _bubbleNodeView.isActiveAndEnabled == false;
 
         public override string ToString()
@@ -108,14 +114,14 @@ namespace Assets.Code.Bubble
             _bubbleNodeView.Remove();
         }
 
-        public void DropNode(TweenCallback callback = null)
+        public async UniTask DropNodeAsync(TweenCallback callback = null)
         {
             _bubbleNodeView.DropNode();
             var targetPosition = Position;
             targetPosition.x += targetPosition.x > 2 ? Random.Range(1, 2) : Random.Range(-1, -2);
             
             targetPosition.y = -12;
-            SetPosition(targetPosition, true, 1f, callback, Ease.OutBounce);
+            await SetPositionAsync(targetPosition, true, 1f, callback, Ease.OutBounce);
         }
 
         public void ClearNeighbors()

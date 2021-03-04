@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using UniRx.Async;
 using UnityEngine;
 
 namespace Assets.Code.Bubble
@@ -24,7 +25,7 @@ namespace Assets.Code.Bubble
         void HideNode(TweenCallback callback = null);
         void ExplodeNode(TweenCallback callback = null);
         void Remove();
-        void DropNode(TweenCallback callback = null);
+        UniTask DropNodeAsync(TweenCallback callback = null);
         void SetNeighbor(int index, IBubbleNodeController node);
         void ClearNeighbors();
     }

@@ -186,16 +186,20 @@ namespace Assets.Code.Bubble
         private async UniTask DropAndRemoveNodes(IEnumerable<IBubbleNodeController> nodesToRemove)
         {
             var hasNodesToRemove = false;
+            var dropTasks = new List<UniTask>();
             foreach (var node in nodesToRemove)
             {
-                node.DropNode(() =>
+                var t = node.DropNodeAsync(() =>
                 {   
                     RemoveNode(node,"drop", true);
                     hasNodesToRemove = true;
                 });
-                await UniTask.DelayFrame(1);
+                dropTasks.Add(t);
+                //await UniTask.DelayFrame(1);
             }
 
+            await UniTask.WhenAll(dropTasks);
+            
             if (hasNodesToRemove)
             {
                 GC.Collect();
