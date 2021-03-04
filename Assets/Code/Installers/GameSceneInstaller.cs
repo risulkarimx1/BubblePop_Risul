@@ -1,5 +1,6 @@
 using Assets.Code.Bubble;
 using Assets.Code.Environments;
+using Assets.Code.GameSceneUi;
 using Assets.Code.Managers;
 using Assets.Code.ShootEffect;
 using Assets.Code.Signals;
@@ -16,6 +17,7 @@ namespace Assets.Code.Installers
         [SerializeField] private GameObject _mouseShootView;
         [SerializeField] private GameObject _dynamicEnvironment;
         [SerializeField] private GameObject _explosionPrefab;
+        [SerializeField] private GameObject _scoreUiPrefab;
 
         public override void InstallBindings()
         {
@@ -29,6 +31,7 @@ namespace Assets.Code.Installers
             Container.DeclareSignal<CeilingCollisionSignal>();
             Container.DeclareSignal<StrikerFinishedSignal>();
             Container.DeclareSignal<StrikeSignal>();
+            Container.DeclareSignal<ScoreUpdateSignal>();
 
             // Game States
             Container.Bind<GameStateController>().AsSingle();
@@ -59,6 +62,11 @@ namespace Assets.Code.Installers
             Container.Bind<DynamicEnvironmentController>().FromComponentInNewPrefab(_dynamicEnvironment).AsSingle()
                 .NonLazy();
 
+            // Ui
+            Container.Bind<ScoreUiView>().FromComponentInNewPrefab(_scoreUiPrefab).AsSingle();
+            Container.Bind<ScoreUiModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ScoreUiController>().AsSingle();
+            
             // Mouse Input
             Container.Bind<MouseShootView>().FromComponentInNewPrefab(_mouseShootView).AsSingle();
             Container.BindInterfacesAndSelfTo<MouseShootController>().AsSingle().NonLazy();

@@ -14,6 +14,9 @@ TextureImporter:
   - first:
       213: 2713915087196460949
     second: Environment_3
+  - first:
+      213: -4500993874483076431
+    second: Environment_4
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -202,6 +205,27 @@ TextureImporter:
       bones: []
       spriteID: 5971be29463c9a520800000000000000
       internalID: 2713915087196460949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Environment_4
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 90
+        width: 95
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b22a3f1be14981c0800000000000000
+      internalID: -4500993874483076431
       vertices: []
       indices: 
       edges: []

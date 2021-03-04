@@ -20,3 +20,5 @@ MonoBehaviour:
     type: 3}
   _explosionPrefab: {fileID: 6107005552668691628, guid: c1b023e41d8fef94597d54fa41eab285,
     type: 3}
+  _scoreUiPrefab: {fileID: 3918356059841261857, guid: 9d5ef799c45358642863931acf1e95c6,
+    type: 3}

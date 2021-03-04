@@ -132,11 +132,11 @@ namespace Assets.Code.Bubble
             
             await DropAndRemoveNodes(isolatedNodes);
             await RemapNeighborsAsync();
-            
+
+            Debug.Log($"nodes left: {_viewToControllerMap.Count}");
 
             if (_viewToControllerMap.IsEmpty)
             {
-                
                 _gameStateController.CurrentSate = GameState.GameOverWin;
             }
             
@@ -167,7 +167,11 @@ namespace Assets.Code.Bubble
             foreach (var node in nodesToRemove)
             {
                 _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
-                removedNode?.Remove();
+                if (removedNode != null)
+                {
+                    _signalBus.Fire(new ScoreUpdateSignal() { Score = removedNode.NodeValue });
+                    removedNode.Remove();
+                }
             }
         }
 
