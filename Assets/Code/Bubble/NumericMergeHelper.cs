@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 using UniRx.Async;
 
 namespace Assets.Code.Bubble
@@ -47,7 +48,8 @@ namespace Assets.Code.Bubble
             {
                 var current = elements[index];
                 var upperNode = elements[index - 1];
-                current.SetPosition(upperNode.Position, true, 10,
+                await UniTask.SwitchToMainThread();// brings to main thread
+                await current.SetPositionAsync(upperNode.Position, true, 10,// leaves main thread
                     () =>
                     {
                         upperNode.NodeValue = upperNode.NodeValue * current.NodeValue;
@@ -57,12 +59,13 @@ namespace Assets.Code.Bubble
                             willExplode = true;
                         }
                     });
-                await UniTask.Delay(100);
+                
                 current.HideNode();
                 index--;
             }
-
-            await UniTask.Delay(100);
+            
+            // Coming back to main thread again
+            await UniTask.SwitchToMainThread();
             return willExplode;
         }
 

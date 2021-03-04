@@ -94,7 +94,7 @@ namespace Assets.Code.Bubble
         public async UniTask<IBubbleNodeController> MapNeighborAtDirection(Vector2 origin, Vector2 direction)
         {
             var hit = Physics2D.Raycast(origin, direction, 1, Constants.BubbleLayerMask);
-            await UniTask.Yield();
+            await UniTask.DelayFrame(1);
             Debug.DrawRay(origin, direction, Color.cyan);
             if (hit.collider != null)
             {

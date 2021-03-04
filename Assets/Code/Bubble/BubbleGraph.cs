@@ -117,7 +117,7 @@ namespace Assets.Code.Bubble
 
         private async UniTask PerformMergeOnNodeAsync(IBubbleNodeController strikerNodeController)
         {
-            // map striker to its neighbour
+            // map striker to its neighbor
             await _attachmentHelper.MapNeighbors(strikerNodeController);
 
             // Numeric merge
