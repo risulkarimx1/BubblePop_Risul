@@ -133,7 +133,6 @@ namespace Assets.Code.Bubble
             await DropAndRemoveNodes(isolatedNodes);
             await RemapNeighborsAsync();
             
-            Debug.Log($"_nodes left: {_viewToControllerMap.Count}");
 
             if (_viewToControllerMap.IsEmpty)
             {
@@ -181,6 +180,7 @@ namespace Assets.Code.Bubble
                 {
                     hasNodesToRemove = true;
                     _viewToControllerMap.TryRemove(node.Id, out IBubbleNodeController removedNode);
+                    removedNode.ExplodeNode();
                     removedNode?.Remove();
                 });
                 await UniTask.Yield();

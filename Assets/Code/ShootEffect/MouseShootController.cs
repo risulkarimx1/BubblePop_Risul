@@ -12,6 +12,7 @@ namespace Assets.Code.ShootEffect
     {
         private readonly MouseShootView _mouseShootView;
         private readonly SignalBus _signalBus;
+        private readonly GameStateController _gameStateController;
         private Camera _mainCamera;
 
         private List<Vector2> _collisions = new List<Vector2>();
@@ -19,10 +20,11 @@ namespace Assets.Code.ShootEffect
 
         private bool _isWaitingToShoot;
         
-        public MouseShootController(CameraEffects cameraEffects, MouseShootView mouseShootView, SignalBus signalBus)
+        public MouseShootController(CameraEffects cameraEffects, MouseShootView mouseShootView, SignalBus signalBus, GameStateController gameStateController)
         {
             _mouseShootView = mouseShootView;
             _signalBus = signalBus;
+            _gameStateController = gameStateController;
             _mainCamera = cameraEffects.MainCamera;
             _isWaitingToShoot = false;
             _signalBus.Subscribe<GameStateChangeSignal>(OnGameStateChanged);
@@ -36,7 +38,8 @@ namespace Assets.Code.ShootEffect
         public void Tick()
         {
             if(_isWaitingToShoot == false) return;
-            
+            if(_gameStateController.CurrentSate != GameState.WaitingToShoot) return;
+             
             // on clicked
             if (Input.GetMouseButton(0))
             {

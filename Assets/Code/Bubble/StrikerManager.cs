@@ -47,12 +47,21 @@ namespace Assets.Code.Bubble
             _strikerControllers = new StrikerController[_totalStrikers];
             for (int i = 0; i < strikers.Length; i++)
             {
-                _strikerControllers[i] = _strikerFactory.Create(strikers[i], Constants.HiddenPosition);
+                if (i == 0)
+                {
+                    _strikerControllers[i] = _strikerFactory.Create(strikers[i], Constants.FirstPosition);
+                }else if (i == 1)
+                {
+                    _strikerControllers[i] = _strikerFactory.Create(strikers[i], Constants.SecondPosition);
+                }
+                else
+                {
+                    _strikerControllers[i] = _strikerFactory.Create(strikers[i], Constants.HiddenPosition);
+                }
+                
                 _strikerControllers[i].SetName($"Striker- {i}");
             }
-
-            _strikerControllers[0].SetPosition(Constants.FirstPosition);
-            _strikerControllers[1].SetPosition(Constants.SecondPosition);
+            
             _currentStriker = 0;
         }
 

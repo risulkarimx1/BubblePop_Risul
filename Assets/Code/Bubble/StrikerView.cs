@@ -33,7 +33,7 @@ namespace Assets.Code.Bubble
         public void Strike(Vector2 target)
         {
             _circleCollider.enabled = true;
-            _circleCollider.radius = 0.3f;
+            _circleCollider.radius = _circleCollider.radius / 2;
             _rigidBody.isKinematic = false;
             _rigidBody.AddForce(target.normalized * 20, ForceMode2D.Impulse);
         }

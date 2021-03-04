@@ -9,6 +9,7 @@ namespace Assets.Code.Bubble
     {
         private readonly BubbleNodeModel _bubbleNodeModel;
         private readonly BubbleNodeView _bubbleNodeView;
+        private readonly ExplosionController.Factory _explosionFactory;
 
         public IBubbleNodeController TopRight { get; set; }
         public IBubbleNodeController Right { get; set; }
@@ -31,10 +32,11 @@ namespace Assets.Code.Bubble
         }
 
 
-        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView)
+        public BubbleNodeController(BubbleNodeModel bubbleNodeModel, BubbleNodeView bubbleNodeView, ExplosionController.Factory explosionFactory)
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
+            _explosionFactory = explosionFactory;
             _bubbleNodeModel.NodeValue.Subscribe(val => { _bubbleNodeView.ValueText.text = val.ToString(); })
                 .AddTo(_bubbleNodeView);
         }
@@ -73,6 +75,20 @@ namespace Assets.Code.Bubble
             _bubbleNodeView.AnimateHide(callback);
         }
 
+        public void ExplodeNode(TweenCallback callback = null)
+        {
+            ExplosionController explosion = null;
+            DOTween.Sequence().AppendCallback(() =>
+            {
+                 explosion = _explosionFactory.Create(Position);
+            }).AppendCallback(() =>
+            {
+                explosion.Dispose();;
+            });
+            
+            HideNode(callback);
+        }
+
         public void Remove()
         {
             if (IsRemoved) return;
@@ -87,9 +103,12 @@ namespace Assets.Code.Bubble
 
         public void DropNode(TweenCallback callback = null)
         {
+            _bubbleNodeView.DropNode();
             var targetPosition = Position;
-            targetPosition.y = -20;
-            SetPosition(targetPosition, true, 2, callback, Ease.InQuint);
+            targetPosition.x += targetPosition.x > 2 ? Random.Range(1, 2) : Random.Range(-1, -2);
+            
+            targetPosition.y = -12;
+            SetPosition(targetPosition, true, 1f, callback, Ease.OutBounce);
         }
 
         public void ClearNeighbors()

@@ -10,13 +10,14 @@ namespace Assets.Code.Bubble
         [SerializeField] private TextMeshPro _valueText;
         public List<string> Neighbors; 
         private Transform _transform;
-
+        private CircleCollider2D _circleCollider;
         public TextMeshPro ValueText => _valueText;
 
         private void Awake()
         {
             _transform = GetComponent<Transform>();
-            
+            _circleCollider = GetComponent<CircleCollider2D>();
+
         }
 
         public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
@@ -61,6 +62,11 @@ namespace Assets.Code.Bubble
             }
         }
 
+        public void DropNode()
+        {
+            _circleCollider.enabled = false;
+        }
+        
         public void Remove()
         {
             gameObject.SetActive(false);

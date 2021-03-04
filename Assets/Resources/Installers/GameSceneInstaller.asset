@@ -16,3 +16,7 @@ MonoBehaviour:
     type: 3}
   _mouseShootView: {fileID: 948926173552311183, guid: f083080bae1d68148b39a5a5bd0a84b9,
     type: 3}
+  _dynamicEnvironment: {fileID: 3537426369397240412, guid: a213c1e4cc69cb641b96a268c29f0595,
+    type: 3}
+  _explosionPrefab: {fileID: 6107005552668691628, guid: c1b023e41d8fef94597d54fa41eab285,
+    type: 3}

@@ -1,4 +1,5 @@
 using Assets.Code.Bubble;
+using Assets.Code.Environments;
 using Assets.Code.Managers;
 using Assets.Code.ShootEffect;
 using Assets.Code.Signals;
@@ -13,6 +14,8 @@ namespace Assets.Code.Installers
     {
         [SerializeField] private GameObject _mainCamera;
         [SerializeField] private GameObject _mouseShootView;
+        [SerializeField] private GameObject _dynamicEnvironment;
+        [SerializeField] private GameObject _explosionPrefab;
 
         public override void InstallBindings()
         {
@@ -34,6 +37,10 @@ namespace Assets.Code.Installers
             Container.Bind<BubbleDataContainer>().FromScriptableObjectResource(Constants.BubbleDataContainerPath)
                 .AsSingle().NonLazy();
 
+            // Explosion Factory
+            Container.BindFactory<Vector3, ExplosionController, ExplosionController.Factory>().FromPoolableMemoryPool(
+                x => x.WithInitialSize(10).FromComponentInNewPrefab(_explosionPrefab).UnderTransformGroup("Explosions"));
+
             // Bubble Factory
             Container.BindFactory<string, IBubbleNodeController, BubbleFactory>()
                 .FromFactory<BubbleNodeFactory>();
@@ -47,6 +54,10 @@ namespace Assets.Code.Installers
             Container.Bind<NumericMergeHelper>().AsSingle();
             Container.Bind<BubbleAttachmentHelper>().AsSingle();
             Container.Bind<BubbleGraph>().AsSingle();
+
+            // Environment
+            Container.Bind<DynamicEnvironmentController>().FromComponentInNewPrefab(_dynamicEnvironment).AsSingle()
+                .NonLazy();
 
             // Mouse Input
             Container.Bind<MouseShootView>().FromComponentInNewPrefab(_mouseShootView).AsSingle();

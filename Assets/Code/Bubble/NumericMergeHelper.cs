@@ -73,7 +73,7 @@ namespace Assets.Code.Bubble
             foreach (var bubbleNodeController in neighbors)
             {
                 nodesToRemove.Add(bubbleNodeController);
-                bubbleNodeController.HideNode(); // replace with explode nodes
+                bubbleNodeController.ExplodeNode();
                 await UniTask.Delay(10);
             }
 
