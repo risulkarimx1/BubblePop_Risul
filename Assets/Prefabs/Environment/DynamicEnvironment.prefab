@@ -419,7 +419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3537426369397240413}
-  - component: {fileID: 3537426369397240414}
+  - component: {fileID: 6762934256502362119}
   m_Layer: 0
   m_Name: DynamicEnvironment
   m_TagString: Untagged
@@ -446,7 +446,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3537426369397240414
+--- !u!114 &6762934256502362119
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3537426369397240412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 008f4aed2a526644e8bc5fc678a0b309, type: 3}
+  m_Script: {fileID: 11500000, guid: 7a4acd083df14ac7be426c7fbf26a64f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _clouds:

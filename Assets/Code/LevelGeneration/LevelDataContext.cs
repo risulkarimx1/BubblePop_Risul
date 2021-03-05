@@ -14,5 +14,10 @@
         {
             return _levelDataContainer.GetLevelData(SelectedLevel);
         }
+
+        public string GetSelectedLevelStrikerData()
+        {
+            return _levelDataContainer.GetStrikerData(SelectedLevel);
+        }
     }
 }

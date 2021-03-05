@@ -10,7 +10,6 @@ public class MenuSceneInstaller : ScriptableObjectInstaller<MenuSceneInstaller>
     
     public override void InstallBindings()
     {
-        Container.Bind<CompositeDisposable>().AsSingle();
         Container.Bind<MenuSceneUiView>().FromComponentInNewPrefab(_menuSceneUiViewPrefab).AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<MenuSceneUiController>().AsSingle().NonLazy();
     }

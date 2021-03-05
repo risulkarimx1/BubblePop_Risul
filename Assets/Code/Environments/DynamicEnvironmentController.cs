@@ -1,41 +1,29 @@
 ﻿using System;
 using Assets.Code.Signals;
-using DG.Tweening;
-using UnityEngine;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace Assets.Code.Environments
 {
-    public class DynamicEnvironmentController : MonoBehaviour
+    public class DynamicEnvironmentController: IDisposable
     {
-        [SerializeField] private Transform[] _clouds;
-        [SerializeField] private Transform _piston;
+        private readonly DynamicEnvironmentView _dynamicEnvironmentView;
+        private readonly SignalBus _signalBus;
 
-        [Inject] private SignalBus _signalBus;
-        
-        private void Awake()
+        public DynamicEnvironmentController( DynamicEnvironmentView dynamicEnvironmentView, SignalBus signalBus)
         {
-            foreach (var cloud in _clouds)
-            {
-                var seq = DOTween.Sequence();
-                seq.Append(cloud.DOMoveX(-3, Random.Range(30, 150))).SetRelative(false);
-                seq.SetLoops(-1);
-            }
-            _signalBus.Subscribe<StrikeSignal>(ShootPiston);
+            _dynamicEnvironmentView = dynamicEnvironmentView;
+            _signalBus = signalBus;
+            _signalBus.Subscribe<StrikeSignal>(OnStrike);
         }
 
-        public void ShootPiston()
+        private void OnStrike()
         {
-            DOTween.Sequence()
-                .Append(_piston.DOMoveY(-12, .05f)).SetEase(Ease.OutBounce)
-                .AppendInterval(.5f)
-                .Append(_piston.DOMoveY(-13, 1));
+            _dynamicEnvironmentView.ShootPiston();
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
-            _signalBus.Unsubscribe<StrikeSignal>(ShootPiston);
+            _signalBus.Unsubscribe<StrikeSignal>(OnStrike);
         }
     }
 }

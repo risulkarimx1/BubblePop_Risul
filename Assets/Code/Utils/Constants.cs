@@ -18,5 +18,8 @@ namespace Assets.Code.Utils
         public static readonly Vector2 SecondPosition = new Vector2(4, -12);
 
         public const int MaxBubbleValue = 2048;
+        public static int MenuSceneIndex = 0;
+
+        public static int GameSceneIndex = 1;
     }
 }

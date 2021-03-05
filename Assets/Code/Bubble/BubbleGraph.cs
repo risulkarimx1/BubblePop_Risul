@@ -30,7 +30,8 @@ namespace Assets.Code.Bubble
             BubbleAttachmentHelper attachmentHelper,
             NumericMergeHelper numericMergeHelper,
             NodeIsolationHelper nodeIsolationHelper,
-            ColorMergeHelper colorMergeHelper, GameStateController gameStateController)
+            ColorMergeHelper colorMergeHelper, 
+            GameStateController gameStateController)
         {
             _bubbleFactory = bubbleFactory;
             _levelDataContext = levelDataContext;

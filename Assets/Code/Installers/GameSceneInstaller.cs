@@ -18,6 +18,7 @@ namespace Assets.Code.Installers
         [SerializeField] private GameObject _dynamicEnvironment;
         [SerializeField] private GameObject _explosionPrefab;
         [SerializeField] private GameObject _scoreUiPrefab;
+        [SerializeField] private GameObject _gameOverUiPrefab;
 
         public override void InstallBindings()
         {
@@ -59,13 +60,17 @@ namespace Assets.Code.Installers
             Container.Bind<BubbleGraph>().AsSingle();
 
             // Environment
-            Container.Bind<DynamicEnvironmentController>().FromComponentInNewPrefab(_dynamicEnvironment).AsSingle()
-                .NonLazy();
+
+            Container.Bind<DynamicEnvironmentView>().FromComponentInNewPrefab(_dynamicEnvironment).AsSingle();
+            Container.BindInterfacesAndSelfTo<DynamicEnvironmentController>().AsSingle();
 
             // Ui
             Container.Bind<ScoreUiView>().FromComponentInNewPrefab(_scoreUiPrefab).AsSingle();
             Container.Bind<ScoreUiModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<ScoreUiController>().AsSingle();
+
+            Container.Bind<GameOverUiView>().FromComponentInNewPrefab(_gameOverUiPrefab).AsSingle();
+            Container.BindInterfacesAndSelfTo<GameOverUiController>().AsSingle();
             
             // Mouse Input
             Container.Bind<MouseShootView>().FromComponentInNewPrefab(_mouseShootView).AsSingle();

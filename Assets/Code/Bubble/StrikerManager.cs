@@ -1,4 +1,5 @@
-﻿using Assets.Code.Managers;
+﻿using Assets.Code.LevelGeneration;
+using Assets.Code.Managers;
 using Assets.Code.Signals;
 using Assets.Code.Utils;
 using Zenject;
@@ -9,20 +10,20 @@ namespace Assets.Code.Bubble
     {
         private StrikerController[] _strikerControllers;
         private readonly StrikerController.Factory _strikerFactory;
-        private readonly BubbleDataContainer _bubbleDataContainer;
         private readonly SignalBus _signalBus;
         private readonly GameStateController _gameStateController;
+        private readonly LevelDataContext _levelDataContext;
 
         private int _currentStriker;
         private int _totalStrikers;
 
-        public StrikerManager(StrikerController.Factory strikerFactory, BubbleDataContainer bubbleDataContainer,
-            SignalBus signalBus, GameStateController gameStateController)
+        public StrikerManager(StrikerController.Factory strikerFactory,
+            SignalBus signalBus, GameStateController gameStateController, LevelDataContext levelDataContext)
         {
             _strikerFactory = strikerFactory;
-            _bubbleDataContainer = bubbleDataContainer;
             _signalBus = signalBus;
             _gameStateController = gameStateController;
+            _levelDataContext = levelDataContext;
             _signalBus.Subscribe<StrikeSignal>(OnStrike);
         }
 
@@ -42,7 +43,7 @@ namespace Assets.Code.Bubble
 
         public void InitializeStrikers()
         {
-            var strikers = _bubbleDataContainer.StrikerSequence.Trim().Split(',');
+            var strikers = _levelDataContext.GetSelectedLevelStrikerData().Trim().Split(',');
             _totalStrikers = strikers.Length;
             _strikerControllers = new StrikerController[_totalStrikers];
             for (int i = 0; i < strikers.Length; i++)

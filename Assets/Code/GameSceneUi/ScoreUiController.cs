@@ -12,6 +12,8 @@ namespace Assets.Code.GameSceneUi
         private readonly ScoreUiView _scoreUiView;
         private readonly SignalBus _signalBus;
 
+        public int Score => _scoreUiModel.Score.Value;
+
         public ScoreUiController(ScoreUiModel scoreUiModel, ScoreUiView scoreUiView, SignalBus signalBus)
         {
             _scoreUiModel = scoreUiModel;
