@@ -38,10 +38,7 @@ namespace Assets.Code.Bubble
             _rigidBody.AddForce(target.normalized * 20, ForceMode2D.Impulse);
         }
 
-        public void SetName(string objectName)
-        {
-            _transform.name = objectName;
-        }
+        public void SetName(string objectName) => _transform.name = objectName;
 
         public void DestroyComponent()
         {
@@ -49,9 +46,6 @@ namespace Assets.Code.Bubble
             Destroy(this);
         }
 
-        public void ResetCollider()
-        {
-            _circleCollider.radius = 0.5f;
-        }
+        public void ResetCollider() => _circleCollider.radius = 0.5f;
     }
 }

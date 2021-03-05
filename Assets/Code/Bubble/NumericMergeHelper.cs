@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Assets.Code.Utils;
-using UniRx;
 using UniRx.Async;
 
 namespace Assets.Code.Bubble
@@ -61,7 +60,7 @@ namespace Assets.Code.Bubble
                             willExplode = true;
                         }
                     });
-                
+
                 await UniTask.SwitchToMainThread();
                 current.HideNode(null, true);
                 index--;

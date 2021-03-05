@@ -14,9 +14,8 @@ namespace Assets.Code.Audio
         [SerializeField] private AudioClip _explosion;
         [SerializeField] private AudioClip _strike;
         [SerializeField] private AudioClip _numberMerge;
-        
-        [Header("Long Fx")] 
-        [SerializeField] private AudioClip _win;
+
+        [Header("Long Fx")] [SerializeField] private AudioClip _win;
         [SerializeField] private AudioClip _lose;
 
         [Header("BG")] [SerializeField] private AudioClip _gameClip;

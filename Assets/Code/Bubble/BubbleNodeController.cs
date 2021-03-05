@@ -78,6 +78,7 @@ namespace Assets.Code.Bubble
 
         public void SetNeighbor(int index, IBubbleNodeController node)
         {
+            // Clock wise 
             if (index == 0) TopRight = node;
             if (index == 1) Right = node;
             if (index == 2) BottomRight = node;

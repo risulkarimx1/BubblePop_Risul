@@ -9,7 +9,7 @@ namespace Assets.Code.Bubble
     public class BubbleNodeView : MonoBehaviour
     {
         [SerializeField] private TextMeshPro _valueText;
-        public List<string> Neighbors; 
+        public List<string> Neighbors;
         private Transform _transform;
         private CircleCollider2D _circleCollider;
         public TextMeshPro ValueText => _valueText;
@@ -18,10 +18,10 @@ namespace Assets.Code.Bubble
         {
             _transform = GetComponent<Transform>();
             _circleCollider = GetComponent<CircleCollider2D>();
-
         }
 
-        public async UniTask SetPositionAsync(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
+        public async UniTask SetPositionAsync(Vector2 position, bool animate = false, float speed = 1,
+            TweenCallback callback = null, Ease ease = Ease.Linear)
         {
             if (animate)
             {
@@ -33,17 +33,18 @@ namespace Assets.Code.Bubble
                 }
                 else
                 {
-                    await _transform.DOMove(position, 1 / speed).SetEase(ease).AsyncWaitForCompletion().ConfigureAwait(false);
+                    await _transform.DOMove(position, 1 / speed).SetEase(ease).AsyncWaitForCompletion()
+                        .ConfigureAwait(false);
                 }
             }
             else
             {
                 _transform.position = position;
             }
-            
         }
-        
-        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null, Ease ease = Ease.Linear)
+
+        public void SetPosition(Vector2 position, bool animate = false, float speed = 1, TweenCallback callback = null,
+            Ease ease = Ease.Linear)
         {
             if (animate)
             {
@@ -66,10 +67,7 @@ namespace Assets.Code.Bubble
 
         public StrikerView ConvertToStriker() => gameObject.AddComponent<StrikerView>();
 
-        public Vector3 GetPosition()
-        {
-            return _transform.position;
-        }
+        public Vector3 GetPosition() => _transform.position;
 
         public void AnimateHide(TweenCallback callback)
         {
@@ -85,14 +83,8 @@ namespace Assets.Code.Bubble
             }
         }
 
-        public void DropNode()
-        {
-            _circleCollider.enabled = false;
-        }
-        
-        public void Remove()
-        {
-            gameObject.SetActive(false);
-        }
+        public void DropNode() => _circleCollider.enabled = false;
+
+        public void Remove() => gameObject.SetActive(false);
     }
 }

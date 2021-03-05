@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Code.Bubble
 {
@@ -10,14 +9,10 @@ namespace Assets.Code.Bubble
         [SerializeField] private GameObject _blueBubble;
         [SerializeField] private GameObject _greenBubble;
 
-        [Header("Striker Component Settings")] [SerializeField]
-        private PhysicsMaterial2D _strikerPhysicsMaterial;
-
-        [SerializeField] private string _strikerSequence;
+        [Header("Striker Component Settings")] 
+        [SerializeField] private PhysicsMaterial2D _strikerPhysicsMaterial;
 
         public PhysicsMaterial2D StrikerPhysicsMaterial => _strikerPhysicsMaterial;
-
-        public string StrikerSequence => _strikerSequence;
 
         public GameObject GetBubbleOfType(BubbleType bubbleType)
         {

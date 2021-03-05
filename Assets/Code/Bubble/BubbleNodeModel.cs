@@ -7,8 +7,7 @@ namespace Assets.Code.Bubble
     [Serializable]
     public class BubbleNodeModel
     {
-        [SerializeField]
-        private BubbleType _bubbleType;
+        [SerializeField] private BubbleType _bubbleType;
 
         public ReactiveProperty<int> NodeValue { get; set; } = new ReactiveProperty<int>(0);
 
@@ -17,7 +16,7 @@ namespace Assets.Code.Bubble
             get => _bubbleType;
             set => _bubbleType = value;
         }
-        
+
         public BubbleNodeModel(BubbleType bubbleType, int value)
         {
             BubbleType = bubbleType;

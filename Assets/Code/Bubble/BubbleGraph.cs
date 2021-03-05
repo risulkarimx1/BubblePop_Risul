@@ -16,7 +16,7 @@ namespace Assets.Code.Bubble
         private readonly SignalBus _signalBus;
         private Dictionary<int, IBubbleNodeController> _viewToControllerMap;
 
-        private BubbleAttachmentHelper _attachmentHelper;
+        private readonly BubbleAttachmentHelper _attachmentHelper;
         private readonly NumericMergeHelper _numericMergeHelper;
         private readonly NodeIsolationHelper _nodeIsolationHelper;
         private readonly ColorMergeHelper _colorMergeHelper;

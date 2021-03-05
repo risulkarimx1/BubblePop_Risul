@@ -15,7 +15,7 @@ namespace Assets.Code.Bubble
         private readonly Vector2 _leftDirection = new Vector2(-1, 0).normalized;
         private readonly Vector2 _topLeftDirection = new Vector2(-1, 1).normalized;
 
-        private Dictionary <int, IBubbleNodeController> _viewToControllerMap;
+        private Dictionary<int, IBubbleNodeController> _viewToControllerMap;
 
         public void Configure(Dictionary<int, IBubbleNodeController> viewToControllerMap)
         {
@@ -86,6 +86,7 @@ namespace Assets.Code.Bubble
 
             await UniTask.WhenAll(tasks);
 
+            // 6 neighbors in clockwise direction
             for (var i = 0; i < 6; i++)
             {
                 strikerNodeController.SetNeighbor(i, tasks[i].Result);
