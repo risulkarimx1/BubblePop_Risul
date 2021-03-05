@@ -1,6 +1,7 @@
 ﻿using System;
 using Assets.Code.Bubble;
 using Assets.Code.Signals;
+using DG.Tweening;
 using UniRx.Async;
 using UnityEngine;
 using Zenject;
@@ -49,6 +50,7 @@ namespace Assets.Code.Managers
         public void Dispose()
         {
             _signalBus.Unsubscribe<GameStateChangeSignal>(OnGameStateChanged);
+            DOTween.KillAll();
         }
     }
 }

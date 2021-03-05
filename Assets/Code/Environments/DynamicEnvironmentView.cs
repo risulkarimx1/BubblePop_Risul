@@ -12,7 +12,7 @@ namespace Assets.Code.Environments
         private void Awake()
         {
             foreach (var cloud in _clouds)
-            {
+            { 
                 _cloudSequence  = DOTween.Sequence();
                 _cloudSequence.Append(cloud.DOMoveX(-3, Random.Range(30, 150))).SetRelative(false);
                 _cloudSequence.SetLoops(-1);
@@ -29,7 +29,7 @@ namespace Assets.Code.Environments
 
         private void OnDestroy()
         {
-            _cloudSequence?.Kill();
+            DOTween.KillAll();
         }
     }
 }
