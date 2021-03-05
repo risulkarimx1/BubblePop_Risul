@@ -40,6 +40,11 @@ namespace Assets.Code.GameSceneUi
 
             _scoreUiModel.Score.Value = targetScore;
         }
+
+        public void Hide()
+        {
+            _scoreUiView.Hide();
+        }
         
         public void Dispose()
         {

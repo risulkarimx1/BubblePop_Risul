@@ -148,7 +148,6 @@ namespace Assets.Code.Bubble
         private async UniTask CheckGameOverCondition()
         {
             await UniTask.DelayFrame(1);
-            Debug.Log($"nodes left after: {_viewToControllerMap.Count}");
             if (_viewToControllerMap.Count == 0)
             {
                 _gameStateController.CurrentSate = GameState.GameOverWin;
@@ -218,7 +217,6 @@ namespace Assets.Code.Bubble
         public async UniTask RemoveNodeAsync(IBubbleNodeController node,string type, bool explode = false)
         {
             _viewToControllerMap.Remove(node.Id);
-            Debug.Log($"Removing {node} of type {type}");
             _signalBus.Fire(new ScoreUpdateSignal() { Score = node.NodeValue });
             if (explode)
             {

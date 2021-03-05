@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.Code.Audio;
 using DG.Tweening;
 using UniRx;
 using UniRx.Async;
@@ -12,6 +13,7 @@ namespace Assets.Code.Bubble
         private readonly BubbleNodeView _bubbleNodeView;
         private readonly ExplosionController.Factory _explosionFactory;
         private readonly CameraEffectsController _cameraEffectsController;
+        private readonly AudioController _audioController;
 
         public IBubbleNodeController TopRight { get; set; }
         public IBubbleNodeController Right { get; set; }
@@ -38,12 +40,14 @@ namespace Assets.Code.Bubble
             BubbleNodeModel bubbleNodeModel, 
             BubbleNodeView bubbleNodeView, 
             ExplosionController.Factory explosionFactory,
-            CameraEffectsController cameraEffectsController)
+            CameraEffectsController cameraEffectsController,
+            AudioController audioController)
         {
             _bubbleNodeModel = bubbleNodeModel;
             _bubbleNodeView = bubbleNodeView;
             _explosionFactory = explosionFactory;
             _cameraEffectsController = cameraEffectsController;
+            _audioController = audioController;
             _bubbleNodeModel.NodeValue.Subscribe(val => { _bubbleNodeView.ValueText.text = val.ToString(); })
                 .AddTo(_bubbleNodeView);
         }
@@ -82,13 +86,15 @@ namespace Assets.Code.Bubble
             if (index == 5) TopLeft = node;
         }
 
-        public void HideNode(TweenCallback callback = null)
+        public void HideNode(TweenCallback callback = null, bool merge = false)
         {
+            if (merge) _audioController.NumberMerge();
             _bubbleNodeView.AnimateHide(callback);
         }
 
         public async  UniTask ExplodeNodeAsync(TweenCallback callback = null)
         {
+            _audioController.Explosion();
             ExplosionController explosion = null;
             DOTween.Sequence().AppendCallback(() =>
             {

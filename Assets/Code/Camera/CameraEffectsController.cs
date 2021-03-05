@@ -18,7 +18,7 @@ public class CameraEffectsController : MonoBehaviour
     private static readonly int _amountProperty = Shader.PropertyToID("_Amount");
 
     private Transform _transform;
-    private readonly Vector3 _shakePosition = (Vector3.one - Vector3.back);
+    private readonly Vector3 _shakePosition = (Vector3.one - Vector3.back) * .25f;
     private Vector3 _defaultPosition;
     
     public Camera MainCamera => _camera;

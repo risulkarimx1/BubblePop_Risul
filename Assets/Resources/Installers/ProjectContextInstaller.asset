@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc67605e569d6054ba90a250ad8be855, type: 3}
   m_Name: ProjectContextInstaller
   m_EditorClassIdentifier: 
+  _audioController: {fileID: 3398088566414710929, guid: f53cf60cdff725946b10b66c8d1bc5ca,
+    type: 3}

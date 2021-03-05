@@ -14,5 +14,11 @@ namespace Assets.Code.GameSceneUi
             _imageIcon.DORotate(Vector3.up * 360, 1); 
             _scoreText.text = score.ToString();
         }
+
+        public void Hide()
+        {
+            _imageIcon.DOScale(0, 0.25f).SetEase(Ease.InOutBounce);
+            _scoreText.DOFade(0, 0.25f).SetEase(Ease.Linear);
+        }
     }
 }

@@ -61,8 +61,9 @@ namespace Assets.Code.Bubble
                             willExplode = true;
                         }
                     });
-
-                current.HideNode();
+                
+                await UniTask.SwitchToMainThread();
+                current.HideNode(null, true);
                 index--;
             }
 
