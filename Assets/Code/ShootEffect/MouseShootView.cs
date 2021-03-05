@@ -6,16 +6,16 @@ namespace Assets.Code.ShootEffect
     {
         private bool _showLine = false;
         private LineRenderer _lineRenderer;
-        
+
         private void Awake()
         {
             _lineRenderer = GetComponent<LineRenderer>();
             _lineRenderer.enabled = false;
         }
 
-        public void Tick(Vector2 [] updatedPositions)
+        public void Tick(Vector2[] updatedPositions)
         {
-            if(_showLine == false) return;
+            if (_showLine == false) return;
             for (var i = 0; i < updatedPositions.Length; i++)
             {
                 Vector3 updatedPosition = updatedPositions[i];
@@ -29,8 +29,8 @@ namespace Assets.Code.ShootEffect
             {
                 _lineRenderer.enabled = true;
             }
-              
-            if(dotsCount == _lineRenderer.positionCount) return;
+
+            if (dotsCount == _lineRenderer.positionCount) return;
             while (dotsCount != _lineRenderer.positionCount)
             {
                 if (dotsCount > _lineRenderer.positionCount)

@@ -9,15 +9,15 @@ using Zenject;
 
 namespace Assets.Code.GameSceneUi
 {
-    public class GameOverUiController: IDisposable
+    public class GameOverUiController : IDisposable
     {
         private readonly GameOverUiView _gameOverView;
         private readonly SignalBus _signalBus;
         private readonly ScoreUiController _scoreUiController;
 
         public GameOverUiController(
-            GameOverUiView gameOverView, 
-            SignalBus signalBus, 
+            GameOverUiView gameOverView,
+            SignalBus signalBus,
             ScoreUiController scoreUiController,
             AudioController audioController)
         {
@@ -38,7 +38,7 @@ namespace Assets.Code.GameSceneUi
                     SceneManager.LoadScene(Constants.GameSceneIndex);
                 });
             }).AddTo(_gameOverView);
-            
+
             _signalBus.Subscribe<GameStateChangeSignal>(OnGameStateChanged);
         }
 
@@ -48,7 +48,8 @@ namespace Assets.Code.GameSceneUi
             {
                 _scoreUiController.Hide();
                 _gameOverView.ShowGameOver(true, _scoreUiController.Score);
-            }else if (gameStateChangeSignal.State == GameState.GameOverLose)
+            }
+            else if (gameStateChangeSignal.State == GameState.GameOverLose)
             {
                 _scoreUiController.Hide();
                 _gameOverView.ShowGameOver(false, _scoreUiController.Score);
@@ -57,7 +58,7 @@ namespace Assets.Code.GameSceneUi
 
         public void Dispose()
         {
-            
+            _signalBus.Unsubscribe<GameStateChangeSignal>(OnGameStateChanged);
         }
     }
 }

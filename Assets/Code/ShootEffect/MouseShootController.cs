@@ -19,8 +19,9 @@ namespace Assets.Code.ShootEffect
         private Vector2 _shootDirection;
 
         private bool _isWaitingToShoot;
-        
-        public MouseShootController(CameraEffectsController cameraEffectsController, MouseShootView mouseShootView, SignalBus signalBus, GameStateController gameStateController)
+
+        public MouseShootController(CameraEffectsController cameraEffectsController, MouseShootView mouseShootView,
+            SignalBus signalBus, GameStateController gameStateController)
         {
             _mouseShootView = mouseShootView;
             _signalBus = signalBus;
@@ -37,9 +38,9 @@ namespace Assets.Code.ShootEffect
 
         public void Tick()
         {
-            if(_isWaitingToShoot == false) return;
-            if(_gameStateController.CurrentSate != GameState.WaitingToShoot) return;
-             
+            if (_isWaitingToShoot == false) return;
+            if (_gameStateController.CurrentSate != GameState.WaitingToShoot) return;
+
             // on clicked
             if (Input.GetMouseButton(0))
             {
@@ -116,7 +117,7 @@ namespace Assets.Code.ShootEffect
                 DrawPaths();
             }
         }
-        
+
         private void DrawPaths()
         {
             _mouseShootView.TrySetPointsCount(_collisions.Count);
@@ -129,7 +130,7 @@ namespace Assets.Code.ShootEffect
 
         public void Dispose()
         {
-            
+            _signalBus.Unsubscribe<GameStateChangeSignal>(OnGameStateChanged);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Assets.Code.Utils;
 using UnityEngine;
 using Zenject;
 
@@ -9,7 +8,6 @@ public class ExplosionController : MonoBehaviour, IPoolable<Vector3, IMemoryPool
     private Transform _transform;
     private static readonly int _explode = Animator.StringToHash("Explode");
 
-    private Vector3 _position;
     private IMemoryPool _pool;
 
     private void Awake()
@@ -21,7 +19,6 @@ public class ExplosionController : MonoBehaviour, IPoolable<Vector3, IMemoryPool
     public void OnDespawned()
     {
         _pool = null;
-        _position = Constants.HiddenPosition;
     }
 
     public void OnSpawned(Vector3 position, IMemoryPool memoryPool)

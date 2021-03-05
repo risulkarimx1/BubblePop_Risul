@@ -10,11 +10,12 @@ namespace Assets.Code.Installers
     public class ProjectContextInstaller : ScriptableObjectInstaller<ProjectContextInstaller>
     {
         [SerializeField] private GameObject _audioController;
-        
+
         public override void InstallBindings()
         {
             Container.Bind<AudioController>().FromComponentInNewPrefab(_audioController).AsSingle().NonLazy();
-            Container.Bind<LevelDataContainer>().FromScriptableObjectResource(Constants.LevelDataContainerPath).AsSingle().NonLazy();
+            Container.Bind<LevelDataContainer>().FromScriptableObjectResource(Constants.LevelDataContainerPath)
+                .AsSingle().NonLazy();
             Container.Bind<LevelDataContext>().AsSingle().NonLazy();
         }
     }

@@ -11,7 +11,7 @@ namespace Assets.Code.GameSceneUi
 
         public void SetScore(int score)
         {
-            _imageIcon.DORotate(Vector3.up * 360, 1); 
+            _imageIcon.DORotate(Vector3.up * 360, 1);
             _scoreText.text = score.ToString();
         }
 

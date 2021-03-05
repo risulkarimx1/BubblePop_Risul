@@ -60,7 +60,6 @@ namespace Assets.Code.Installers
             Container.Bind<BubbleGraph>().AsSingle();
 
             // Environment
-
             Container.Bind<DynamicEnvironmentView>().FromComponentInNewPrefab(_dynamicEnvironment).AsSingle();
             Container.BindInterfacesAndSelfTo<DynamicEnvironmentController>().AsSingle();
 

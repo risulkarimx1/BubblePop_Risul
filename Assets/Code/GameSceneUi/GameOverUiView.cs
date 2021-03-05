@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 namespace Assets.Code.GameSceneUi
 {
-    public class GameOverUiView: MonoBehaviour
+    public class GameOverUiView : MonoBehaviour
     {
         [SerializeField] private Transform _bg;
-        
+
         [SerializeField] private Transform _gameWinLoseTextTransform;
         [SerializeField] private Transform _scoreTextTransform;
         [SerializeField] private Transform _homeButtonTransform;
@@ -29,7 +29,7 @@ namespace Assets.Code.GameSceneUi
             _scoreText = _scoreTextTransform.GetComponentInChildren<TextMeshProUGUI>();
             _homeButton = _homeButtonTransform.GetComponent<Button>();
             _playButton = _playButtonTransform.GetComponent<Button>();
-            
+
             _gameWinLoseTextTransform.localScale = Vector3.zero;
             _scoreTextTransform.localScale = Vector3.zero;
             _homeButtonTransform.localScale = Vector3.zero;

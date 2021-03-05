@@ -34,18 +34,15 @@ namespace Assets.Code.GameSceneUi
             var targetScore = _scoreUiModel.Score.Value + score;
             while (_scoreUiModel.Score.Value < targetScore)
             {
-                _scoreUiModel.Score.Value+= 10;
-               await UniTask.DelayFrame(1);
+                _scoreUiModel.Score.Value += 10;
+                await UniTask.DelayFrame(1);
             }
 
             _scoreUiModel.Score.Value = targetScore;
         }
 
-        public void Hide()
-        {
-            _scoreUiView.Hide();
-        }
-        
+        public void Hide() => _scoreUiView.Hide();
+
         public void Dispose()
         {
             _signalBus.Unsubscribe<ScoreUpdateSignal>(OnScoreUpdated);

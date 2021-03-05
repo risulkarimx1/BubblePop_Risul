@@ -4,12 +4,12 @@ using Zenject;
 
 namespace Assets.Code.Environments
 {
-    public class DynamicEnvironmentController: IDisposable
+    public class DynamicEnvironmentController : IDisposable
     {
         private readonly DynamicEnvironmentView _dynamicEnvironmentView;
         private readonly SignalBus _signalBus;
 
-        public DynamicEnvironmentController( DynamicEnvironmentView dynamicEnvironmentView, SignalBus signalBus)
+        public DynamicEnvironmentController(DynamicEnvironmentView dynamicEnvironmentView, SignalBus signalBus)
         {
             _dynamicEnvironmentView = dynamicEnvironmentView;
             _signalBus = signalBus;

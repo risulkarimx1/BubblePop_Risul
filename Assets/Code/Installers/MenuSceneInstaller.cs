@@ -7,7 +7,7 @@ using Zenject;
 public class MenuSceneInstaller : ScriptableObjectInstaller<MenuSceneInstaller>
 {
     [SerializeField] private MenuSceneUiView _menuSceneUiViewPrefab;
-    
+
     public override void InstallBindings()
     {
         Container.Bind<MenuSceneUiView>().FromComponentInNewPrefab(_menuSceneUiViewPrefab).AsSingle().NonLazy();

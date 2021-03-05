@@ -5,12 +5,11 @@ using UnityEngine;
 public class CameraEffectsController : MonoBehaviour
 {
     private Camera _camera;
-    
+
     [SerializeField] private Material _rippleMaterial;
     [SerializeField] private float _maxAmount = 50f;
 
-    [Range(0, 1)]
-    [SerializeField] private float _friction = .9f;
+    [Range(0, 1)] [SerializeField] private float _friction = .9f;
 
     [SerializeField] private float _amount = 0f;
     private static readonly int _centerX = Shader.PropertyToID("_CenterX");
@@ -20,10 +19,10 @@ public class CameraEffectsController : MonoBehaviour
     private Transform _transform;
     private readonly Vector3 _shakePosition = (Vector3.one - Vector3.back) * .25f;
     private Vector3 _defaultPosition;
-    
+
     public Camera MainCamera => _camera;
     private bool _isShaking = false;
-    
+
     private void Awake()
     {
         _camera = GetComponent<Camera>();
@@ -38,15 +37,15 @@ public class CameraEffectsController : MonoBehaviour
 
     public void ShakeCamera()
     {
-        if(_isShaking) return;
-        
+        if (_isShaking) return;
+
         _isShaking = true;
         DOTween.Sequence()
             .Append(_transform.DOShakePosition(1f, _shakePosition))
             .Append(_transform.DOMove(_defaultPosition, 0.25f))
-            .AppendCallback(()=> _isShaking = false);
+            .AppendCallback(() => _isShaking = false);
     }
-    
+
     private async UniTask Ripple(Vector2 pos)
     {
         _amount = _maxAmount;
@@ -60,7 +59,7 @@ public class CameraEffectsController : MonoBehaviour
             _amount *= _friction;
             await UniTask.Yield();
         }
-        
+
         _amount = 0;
     }
 

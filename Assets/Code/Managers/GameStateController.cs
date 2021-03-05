@@ -7,25 +7,20 @@ namespace Assets.Code.Managers
     {
         private readonly SignalBus _signalBus;
         private GameState _currentState;
-        
+
         public GameStateController(SignalBus signalBus)
         {
             _signalBus = signalBus;
         }
-        
+
         public GameState CurrentSate
         {
-            get
-            {
-                return _currentState;
-            }
+            get { return _currentState; }
             set
             {
                 _currentState = value;
-                _signalBus.Fire(new GameStateChangeSignal(){State = _currentState});
-                
+                _signalBus.Fire(new GameStateChangeSignal() {State = _currentState});
             }
         }
-        
     }
 }
