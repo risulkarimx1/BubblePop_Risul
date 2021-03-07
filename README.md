@@ -29,11 +29,11 @@ Game Scene related dependency container. Hosts signal, factory for game scenes.
 ### Bubble Data Container(Assets/Resources/BubbleData)
 Replace bubble images and phyiscs behavior.
 <p align="center">
-  <img src="Screenshots/Picture1.png" width="350" alt="Game Settings">
+  <img src="Screenshots/Picture_1.png" width="350" alt="Game Settings">
 </p>
 ### Level Data Container(Assets/Resources/LevelData)
 <p align="center">
-  <img src="Screenshots/Picture2.png" width="350" alt="Game Settings">
+  <img src="Screenshots/Picture_2.png" width="350" alt="Game Settings">
 </p>
 #### Level Data: Text file to contain grid information. 
 Grid data is consists of color and initial node value
